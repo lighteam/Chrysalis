@@ -1,6 +1,5 @@
 #pragma once
 
-#include <IAnimatedCharacter.h>
 #include <Actor/Fate.h>
 #include <CryAISystem/IAgent.h>
 #include "Snaplocks/Snaplock.h"
@@ -501,6 +500,8 @@ protected:
 	additionally by the editor when you both enter and leave game mode. */
 	virtual void OnResetState();
 
+	//void ResetMannequin();
+
 private:
 	/** An component which is used to discover entities near the actor. */
 	CEntityAwarenessComponent* m_pAwareness { nullptr };
@@ -514,7 +515,7 @@ private:
 	/** Manage their equipment. */
 	CEquipmentComponent* m_pEquipmentComponent { nullptr };
 
-	/** Manage their equipment. */
+	/** All control is handled through an actor controller. */
 	CActorControllerComponent* m_pActorControllerComponent { nullptr };
 
 	/**	A dynamic response proxy. **/

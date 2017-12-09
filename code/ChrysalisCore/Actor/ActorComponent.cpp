@@ -4,7 +4,6 @@
 #include <CryMath/Cry_Math.h>
 #include <CryCore/Assert/CryAssert.h>
 #include <ICryMannequin.h>
-#include <IAnimatedCharacter.h>
 #include <IGameObject.h>
 #include <Actor/Animation/ActorAnimation.h>
 #include <Actor/Animation/Actions/ActorAnimationActionAiming.h>
@@ -93,14 +92,14 @@ void CActorComponent::Initialize()
 	// Character movement controller.
 	m_pCharacterControllerComponent = pEntity->GetOrCreateComponent<Cry::DefaultComponents::CCharacterControllerComponent>();
 
+	// Contoller.
+	m_pActorControllerComponent = pEntity->GetOrCreateComponent<CActorControllerComponent>();
+
 	// Inventory management.
 	m_pInventoryComponent = pEntity->GetOrCreateComponent<CInventoryComponent>();
 
 	// Equipment management.
 	m_pEquipmentComponent = pEntity->GetOrCreateComponent<CEquipmentComponent>();
-
-	// Contoller.
-	m_pActorControllerComponent = pEntity->GetOrCreateComponent<CActorControllerComponent>();
 
 	// Give the actor a DRS proxy, since it will probably need one.
 	m_pDrsComponent = crycomponent_cast<IEntityDynamicResponseComponent*> (pEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
@@ -498,8 +497,8 @@ void CActorComponent::OnResetState()
 		pActionController->Queue(*locomotionAction);
 
 		// HACK: quick way to get some debug info out. Need to filter it to only one entity to prevent overlays.
-		//if (strcmp(GetEntity()->GetName(), "Hero") == 0)
-		//	pActionController->SetFlag(AC_DebugDraw, true);
+		if (strcmp(GetEntity()->GetName(), "Hero") == 0)
+			pActionController->SetFlag(AC_DebugDraw, true);
 	}
 
 	// Mannequin should also be reset.
@@ -507,13 +506,13 @@ void CActorComponent::OnResetState()
 }
 
 
-// HACK: NOTE: TODO: I removed this code during the 5.4 refactor because it's hard to see quite how it fits in again.
-// Most of it will need to be added in at some point. 
-
+//// HACK: NOTE: TODO: I removed this code during the 5.4 refactor because it's hard to see quite how it fits in again.
+//// Most of it will need to be added in at some point. 
+//
 //// TODO: Is this really needed? Perhaps there's a better way to handle it. Revive isn't getting called at present
 //// so there must be a better place for this.
 //
-//void CActor::ResetMannequin()
+//void CActorComponent::ResetMannequin()
 //{
 //	if (m_pActionController)
 //	{

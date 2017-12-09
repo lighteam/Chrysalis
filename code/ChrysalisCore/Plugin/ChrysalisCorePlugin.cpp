@@ -296,6 +296,10 @@ void CChrysalisCorePlugin::OnSystemEvent(ESystemEvent event, UINT_PTR wparam, UI
 			// TODO: CRITICAL: HACK: BROKEN: !!
 			//gEnv->pGameFramework->GetIActorSystem()->Scan("Parameters/Actors");
 
+			// We need to register the procedural contexts.
+			IProceduralClipFactory& proceduralClipFactory = gEnv->pGameFramework->GetMannequinInterface().GetProceduralClipFactory();
+			mannequin::RegisterProceduralClipsForModule(proceduralClipFactory);
+
 			// #TODO: this is also null at this point in init...move as well.
 			if (gEnv->pDynamicResponseSystem)
 			{

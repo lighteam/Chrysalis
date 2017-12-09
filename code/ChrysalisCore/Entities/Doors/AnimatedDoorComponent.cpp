@@ -19,7 +19,7 @@ void CAnimatedDoorComponent::ReflectType(Schematyc::CTypeDesc<CAnimatedDoorCompo
 {
 	desc.SetGUID(CAnimatedDoorComponent::IID());
 	desc.SetEditorCategory("Doors");
-	desc.SetLabel("AnimatedDoor");
+	desc.SetLabel("Animated Door");
 	desc.SetDescription("No description.");
 	desc.SetIcon("icons:ObjectTypes/light.ico");
 	desc.SetComponentFlags({ IEntityComponent::EFlags::Transform });

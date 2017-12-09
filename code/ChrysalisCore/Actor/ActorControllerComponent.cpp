@@ -25,6 +25,9 @@ void CActorControllerComponent::ReflectType(Schematyc::CTypeDesc<CActorControlle
 
 	// Mark the actor component as a hard requirement.
 	desc.AddComponentInteraction(SEntityComponentRequirements::EType::HardDependency, CActorComponent::IID());
+
+	// Mark the advanced animation component as a hard requirement.
+	//desc.AddComponentInteraction(SEntityComponentRequirements::EType::HardDependency, "{3CD5DDC5-EE15-437F-A997-79C2391537FE}"_cry_guid);
 }
 
 
@@ -41,10 +44,6 @@ void CActorControllerComponent::Initialize()
 	// We need to know which actor component we are paired with. The actor controller class is pretty worthless without this.
 	m_pActorComponent = pEntity->GetOrCreateComponent<CActorComponent>();
 	CRY_ASSERT_MESSAGE(m_pActorComponent, "The actor controller component must be paired with an actor component.");
-
-	// Resolve the animation tags.
-	if (strlen (m_pAdvancedAnimationComponent->GetControllerDefinitionFile()) > 0)
-		m_rotateTagId = m_pAdvancedAnimationComponent->GetTagId("Rotate");
 
 	// Initialise the movement state machine.
 	MovementHSMInit();
@@ -398,6 +397,11 @@ void CActorControllerComponent::UpdateAnimation(float frameTime)
 
 		// Update tags and motion parameters used for turning
 		const bool isTurning = std::abs(m_yawAngularVelocity) > angularVelocityMin;
+
+		// Resolve the animation tags.
+		// HACK: This should be done once on init or on entity changed events or similar. It fails hard if the init order is switched with CAdvancedAnimationComponent.
+		if ((m_rotateTagId == TAG_ID_INVALID) && (strlen(m_pAdvancedAnimationComponent->GetControllerDefinitionFile()) > 0))
+			m_rotateTagId = m_pAdvancedAnimationComponent->GetTagId("Rotate");
 
 		// Set the tag, if it exists.
 		if (m_rotateTagId != TAG_ID_INVALID)

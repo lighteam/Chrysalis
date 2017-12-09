@@ -2,14 +2,8 @@
 
 #include <StateMachine/StateMachine.h>
 #include "Components/Player/Input/PlayerInputComponent.h"
-#include "DefaultComponents/Geometry/AdvancedAnimationComponent.h"
 #include "DefaultComponents/Physics/CharacterControllerComponent.h"
-
-
-//#include <CryNetwork/ISerialize.h>
-//#include <CryMath/Cry_Vector3.h>
-//#include <CryCore/CryFlags.h>
-//#include <IGameObject.h>
+#include "DefaultComponents/Geometry/AdvancedAnimationComponent.h"
 
 
 namespace Chrysalis
