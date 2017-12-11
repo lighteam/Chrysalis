@@ -60,8 +60,6 @@ private:
 	void ReleaseWaterEffects();
 	void TriggerOutOfWaterEffectIfNeeded(const CActorControllerComponent& actorControllerComponent);
 
-	void UpdateCharacterStanceTag(CActorControllerComponent& actorControllerComponent);
-
 	CActorStateDead m_stateDead;
 	CActorStateFly m_stateFly;
 	CActorStateGround m_stateGround;
@@ -103,10 +101,10 @@ const CActorStateMovement::TStateIndex CActorStateMovement::Root(CActorControlle
 		case STATE_EVENT_INIT:
 			//m_pWaterEffects = NULL;
 //			if (actorControllerComponent.IsClient())
-			{
-				CreateWaterEffects();
-			}
-			break;
+		{
+			CreateWaterEffects();
+		}
+		break;
 
 		case STATE_EVENT_RELEASE:
 			ReleaseWaterEffects();
@@ -911,20 +909,6 @@ void CActorStateMovement::ReleaseWaterEffects()
 	m_pWaterEffects->Release ();
 	delete m_pWaterEffects;
 	m_pWaterEffects = NULL;
-	}*/
-}
-
-
-void CActorStateMovement::UpdateCharacterStanceTag(CActorControllerComponent& actorControllerComponent)
-{
-	/*IAnimatedCharacter *pAnimatedCharacter = actorControllerComponent.GetAnimatedCharacter ();
-	if (pAnimatedCharacter)
-	{
-	IActionController *pActionController = pAnimatedCharacter->GetActionController ();
-	if (pActionController)
-	{
-	actorControllerComponent.SetStanceTag (actorControllerComponent.GetStance (), pActionController->GetContext ().state);
-	}
 	}*/
 }
 }

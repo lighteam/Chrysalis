@@ -492,8 +492,8 @@ void CActorComponent::OnResetState()
 	auto locomotionAction = new CActorAnimationActionLocomotion();
 	QueueAction(*locomotionAction);
 
-	// HACK: the CAdvancedAnimation doesn't allow us to queue actions yet, this is a workaround.
-	if (auto *pActionController = gEnv->pGameFramework->GetMannequinInterface().FindActionController(*GetEntity()))
+	// HACK: the CAdvancedAnimation doesn't allow us access to the action controller. This is a workaround.
+	if (auto *pActionController = GetActionController())
 	{
 		// The mannequin tags for an actor will need to be loaded. Because these are found in the controller definition,
 		// they are potentially different for every actor. 
@@ -817,10 +817,7 @@ IActionController* CActorComponent::GetActionController() const
 {
 	// HACK: the CAdvancedAnimation doesn't allow us to queue actions yet, this is a workaround. It might be better to get CryTek to implement
 	// this in the CAdvancedAnimation class instead. This will do for now.
-	if (IActionController *pActionController = gEnv->pGameFramework->GetMannequinInterface().FindActionController(*GetEntity()))
-		return pActionController;
-
-	return nullptr;
+	return gEnv->pGameFramework->GetMannequinInterface().FindActionController(*GetEntity());
 }
 
 
