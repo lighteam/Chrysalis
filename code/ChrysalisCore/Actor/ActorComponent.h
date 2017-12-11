@@ -286,6 +286,8 @@ public:
 	/** Is the actor currently jogging?  */
 	virtual bool IsJogging() const = 0;
 
+	virtual IActionController* GetActionController() const = 0;
+
 	/** Kill the character. */
 	virtual void Kill() = 0;
 
@@ -500,7 +502,7 @@ protected:
 	additionally by the editor when you both enter and leave game mode. */
 	virtual void OnResetState();
 
-	//void ResetMannequin();
+	void ResetMannequin();
 
 private:
 	/** An component which is used to discover entities near the actor. */
@@ -527,7 +529,7 @@ private:
 	/** The pre-determined fate for this actor. */
 	CFate m_fate;
 
-	
+
 	// ***
 	// *** AI / Player Control
 	// ***
@@ -588,10 +590,47 @@ private:
 	/** If we're interacting with something, this is the actual interaction. */
 	IInteraction* m_pInteraction { nullptr };
 
+
+	// ***
+	// *** Allow control of the actor's animations / fragments / etc.
+	// ***
+
+public:
+	void QueueAction(TAction<SAnimationContext>& pAction) { m_pAdvancedAnimationComponent->QueueAction(pAction); };
+
+	virtual IActionController* GetActionController() const;
+
+	const SActorMannequinParams* GetMannequinParams() const { return m_actorMannequinParams; }
+
+
+	/**
+	Gets stance tag identifier. The returned TagID is useful for driving animation.
+
+	\param	actorStance The actor's stance.
+
+	\return The stance tag identifier.
+	**/
+	TagID GetStanceTagId(EActorStance actorStance);
+
+
+	/**
+	Gets posture tag identifier. The returned TagID is useful for driving animation.
+
+	\param	actorPosture The actor's posture.
+
+	\return The posture tag identifier.
+	**/
+	TagID GetPostureTagId(EActorPosture actorPosture);
+
+private:
+	const SActorMannequinParams* m_actorMannequinParams;
+
+
 	// ***
 	// *** Item System.
 	// ***
 
+public:
 	EntityId GetCurrentItemId(bool includeVehicle) const;
 
 	/**
@@ -615,7 +654,7 @@ public:
 
 	/**
 	Query if this instance is in first person view.
-	
+
 	\return True if this instance is controlled by the local player in a first person perspective, false for all other cases.
 	**/
 	virtual bool IsViewFirstPerson() const;

@@ -34,7 +34,7 @@
    <Object Type="EnvironmentProbe" Layer="Main" LayerGUID="374a523a-e30d-4fff-b284-10fcbf81d9a7" Id="3e966bc9-65ed-15cb-1906-2c579cc4c9fe" Name="EnvironmentProbe-1" Pos="65.486526,62.54652,34.985748" FloorNumber="-1" Rotate="0.99999177,0,0,0" ColorRGB="65535" cubemap_resolution="256" preview_cubemap="0" OutdoorOnly="0" CastShadow="1" CastShadowMinspec="1" DynamicDistanceShadows="0" GIMode="0" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" RenderNearest="0" NoStaticDecals="0" EntityClass="EnvironmentLight" HasEntity="1">
     <Properties />
     <Components>
-     <Component typeId="0d3d1840-d239-411e-8738-14c56cccee2c" guid="95ef2629-ad2b-42f4-b5df-be54ea2af5a6" CryXmlVersion="2" Active="true" IgnoreVisAreas="false" SortPriority="0" AttentuationFalloffMax="1" VolumetricFogOnly="false" AffectsVolumetricFog="true" AffectsOnlyThisArea="true" DiffuseMultiplier="1" SpecularMultiplier="1" ProjectionActive="false" ProjectionHeight="1" ProjectionLength="1" ProjectionWidth="1" Cubemap="">
+     <Component typeId="0d3d1840-d239-411e-8738-14c56cccee2c" guid="8ea5065b-11e3-21ec-3d1b-01513828d680" CryXmlVersion="2" Active="true" IgnoreVisAreas="false" SortPriority="0" AttentuationFalloffMax="1" VolumetricFogOnly="false" AffectsVolumetricFog="true" AffectsOnlyThisArea="true" DiffuseMultiplier="1" SpecularMultiplier="1" ProjectionActive="false" ProjectionHeight="1" ProjectionLength="1" ProjectionWidth="1" Cubemap="">
       <BoxSize x="128" y="128" z="128"/>
       <Color r="1" g="1" b="1" a="1"/>
      </Component>
@@ -197,13 +197,13 @@
    <Object Type="EmptyEntity" Layer="Main" LayerGUID="374a523a-e30d-4fff-b284-10fcbf81d9a7" Id="595f0878-5819-f386-0707-c15ca1401ae7" Name="Hero" Pos="65.5,60.125,32" FloorNumber="-1" Rotate="1,0,0,0" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" CastShadowMinspec="1" DynamicDistanceShadows="0" GIMode="0" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" RenderNearest="0" NoStaticDecals="0" EntityClass="Entity" HasEntity="1">
     <Properties />
     <Components>
-     <Component CryXmlVersion="2" TypeGUID="33e4a852-b605-4deb-881f-d3ec252a9edb" TypeName="Chrysalis::CCharacterComponent" GUID="470cdfab-98da-e4ea-35e6-6b84b04c833f" Name="" UserAdded="true">
+     <Component CryXmlVersion="2" TypeGUID="33e4a852-b605-4deb-881f-d3ec252a9edb" TypeName="Chrysalis::CCharacterComponent" GUID="d813324d-bb94-e516-0563-7a007f397419" Name="" UserAdded="true">
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="d11a58f0-09b5-4685-b5ea-cfc04aeff2e7" TypeName="Chrysalis::CActorComponent" GUID="06aac9c1-fd57-373e-e33c-4f8e24e71c4c" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="d11a58f0-09b5-4685-b5ea-cfc04aeff2e7" TypeName="Chrysalis::CActorComponent" GUID="1860c07b-64d8-6f44-21a1-452f2e4b41dc" Name="" UserAdded="false">
       <properties GeometryFirstPerson="objects/characters/human/male/human_male.cdf" GeometryThirdPerson="objects/characters/human/male/human_male.cdf"/>
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="98183f31-a685-43cd-92a9-815274f0a81c" TypeName="Cry::DefaultComponents::CCharacterControllerComponent" GUID="942d6e7a-9fd4-37fa-7343-93322011370a" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="98183f31-a685-43cd-92a9-815274f0a81c" TypeName="Cry::DefaultComponents::CCharacterControllerComponent" GUID="9c2b0e3e-a19b-778d-908b-06b3068c775c" Name="" UserAdded="false">
       <Transform x="1" y="1" z="1">
        <translation>
         <element element="0"/>
@@ -218,19 +218,19 @@
        <Movement AirControl="0" AirResistance="0.2" Inertia="8" InertiaAcc="8" MaxClimb="0.87266463" MaxJump="0.87266463" MinSlide="1.2217305" MinFall="1.3962634" MaxGroundVelocity="16"/>
       </properties>
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="d9cd9be7-f17f-4331-bebf-e0ed9567d1de" TypeName="Chrysalis::CInventoryComponent" GUID="4d844489-b17b-3ff9-d184-ca9e4d4b29a2" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="d9cd9be7-f17f-4331-bebf-e0ed9567d1de" TypeName="Chrysalis::CInventoryComponent" GUID="a201f43d-ca45-fb6f-5d76-37da502a6fac" Name="" UserAdded="false">
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="e288ab46-cc70-46c4-8264-6d4e8f0d832c" TypeName="Chrysalis::CEquipmentComponent" GUID="9f9289dc-b49d-f8e5-6f09-079262f05eab" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="e288ab46-cc70-46c4-8264-6d4e8f0d832c" TypeName="Chrysalis::CEquipmentComponent" GUID="d23e581a-1415-823d-922e-ee49a3cfe487" Name="" UserAdded="false">
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="b36ceff9-e9be-4ebb-8ae5-fc0fb8f49357" TypeName="Chrysalis::CActorControllerComponent" GUID="22913b79-944e-082b-0d21-04e8ffd60dd6" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="b36ceff9-e9be-4ebb-8ae5-fc0fb8f49357" TypeName="Chrysalis::CActorControllerComponent" GUID="8032122c-9c4e-1ab1-f256-0a21b2f4b703" Name="" UserAdded="false">
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="dd951bc3-3eb4-478f-8414-f9a5a5cb3437" TypeName="Chrysalis::CEntityAwarenessComponent" GUID="46d0d904-d0c7-1e20-ab2a-29e04d6996d2" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="dd951bc3-3eb4-478f-8414-f9a5a5cb3437" TypeName="Chrysalis::CEntityAwarenessComponent" GUID="bb2ae7cf-7830-e6f9-2fb2-63946bb2f034" Name="" UserAdded="false">
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="a3c41456-80f1-4e0d-9b46-62685f2aee4a" TypeName="Chrysalis::CSnaplockComponent" GUID="174ee1ea-2b47-f20b-6baf-d45fb7796bc4" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="a3c41456-80f1-4e0d-9b46-62685f2aee4a" TypeName="Chrysalis::CSnaplockComponent" GUID="bb75fcad-5f36-ab6f-f68e-d7c4cf31e042" Name="" UserAdded="false">
       <Transform x="1" y="1" z="1">
        <translation>
         <element element="0"/>
@@ -242,10 +242,10 @@
       </Transform>
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="9a65029f-3d2d-4754-9a7a-c9aaaed49c3d" TypeName="Chrysalis::CCharacterAttributesComponent" GUID="6f77d745-9938-205f-ec84-ab09528086cb" Name="" UserAdded="false">
+     <Component CryXmlVersion="2" TypeGUID="9a65029f-3d2d-4754-9a7a-c9aaaed49c3d" TypeName="Chrysalis::CCharacterAttributesComponent" GUID="818db052-117a-299f-95e2-9e9a437b4ae9" Name="" UserAdded="false">
       <properties />
      </Component>
-     <Component CryXmlVersion="2" TypeGUID="3cd5ddc5-ee15-437f-a997-79c2391537fe" TypeName="Cry::DefaultComponents::CAdvancedAnimationComponent" GUID="b5ef9e77-5337-766d-e5ef-cdd20d914f2a" Name="" UserAdded="true">
+     <Component CryXmlVersion="2" TypeGUID="3cd5ddc5-ee15-437f-a997-79c2391537fe" TypeName="Cry::DefaultComponents::CAdvancedAnimationComponent" GUID="e379a71a-ef1d-31f2-72eb-9c81b1b3db69" Name="" UserAdded="true">
       <Transform x="1" y="1" z="1">
        <translation>
         <element element="0"/>
@@ -255,7 +255,7 @@
        <rotation x="0" y="-0" z="0"/>
        <scale />
       </Transform>
-      <properties Type="RenderAndCollider" Character="objects/characters/human/male/human_male.cdf" DatabasePath="objects/characters/human/male/human_male.adb" ControllerDefPath="objects/characters/human/male/human_male_controller_defs.xml" DefaultScope="Char3P" DefaultFragment="Idle" AnimDriven="false" GroundAlign="true">
+      <properties Type="RenderAndCollider" Character="objects/characters/human/male/human_male.cdf" DatabasePath="objects/characters/human/male/human_male.adb" ControllerDefPath="objects/characters/human/male/human_male_controller_defs.xml" DefaultScope="Char1P" DefaultFragment="Idle" AnimDriven="false" GroundAlign="true">
        <Render ShadowSpec="Low" IgnoreVisArea="false" ViewDistRatio="100" LODDistance="100" GIMode="None"/>
        <Physics Mass="78" Density="0"/>
       </properties>

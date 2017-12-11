@@ -55,7 +55,6 @@ private:
 	void StateSprintInput(CActorControllerComponent& actorControllerComponent, const SInputEventData& inputEvent);
 	void ProcessSprint(CActorControllerComponent& actorControllerComponent, const SActorPrePhysicsData& prePhysicsEvent);
 	void OnSpecialMove(CActorControllerComponent& actorControllerComponent, IActorEventListener::ESpecialMove specialMove);
-	bool IsActionControllerValid(CActorControllerComponent& actorControllerComponent) const;
 
 	void CreateWaterEffects();
 	void ReleaseWaterEffects();
@@ -878,19 +877,6 @@ void CActorStateMovement::OnSpecialMove(CActorControllerComponent& actorControll
 				(*cur)->OnSpecialMove(&actorControllerComponent, specialMove);
 			}
 		}*/
-}
-
-
-bool CActorStateMovement::IsActionControllerValid(CActorControllerComponent& actorControllerComponent) const
-{
-	//IAnimatedCharacter* pAnimatedCharacter = actorControllerComponent.GetAnimatedCharacter();
-
-	//if (pAnimatedCharacter != NULL)
-	//{
-	//	return (pAnimatedCharacter->GetActionController() != NULL);
-	//}
-
-	return false;
 }
 
 
