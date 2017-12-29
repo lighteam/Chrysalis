@@ -254,7 +254,7 @@ public:
 	virtual void OnActionInteractionStart() = 0;
 
 	/** Received when the player has indicated the actor should try and interact with a nearby entity. */
-	virtual void OnActionInteraction() = 0;
+	virtual void OnActionInteractionTick() = 0;
 
 	/** Received when the player has indicated the actor should exit "interaction mode". */
 	virtual void OnActionInteractionEnd() = 0;
@@ -285,7 +285,26 @@ public:
 
 	/** Is the actor currently jogging?  */
 	virtual bool IsJogging() const = 0;
+	
+	/**
+	Call this to place the actor into "interaction mode". This should be called by any section of code that wants to
+	trigger an interaction with the actor. This will lock out any other attempts to start an interaction until this one
+	has completed. Generally, you will want whatever process is kicked off by the 'OnActionInteractionStart' function to
+	make a call to this at the start of it's specific interaction.
+	**/
+	virtual void InteractionStart() = 0;
 
+	/** Received at intervals during an on-going interaction. */
+	virtual void InteractionTick() = 0;
+
+	/** Call this to remove the actor from "interaction mode". This will open the actor up to accepting interactions again. */
+	virtual void InteractionEnd() = 0;
+
+	/**
+	Gets action controller.
+	
+	\return Null if it fails, else the action controller.
+	**/
 	virtual IActionController* GetActionController() const = 0;
 
 	/** Kill the character. */
@@ -487,9 +506,8 @@ public:
 	*/
 	const CFate& GetFate() { return m_fate; }
 
-	// TODO: Convenience functions, for now - think about removing them.
-	EActorStance GetStance() const { return m_pActorControllerComponent->GetStance(); }
-	EActorPosture GetPosture() const { return m_pActorControllerComponent->GetPosture(); }
+	/** Gives you access to the controller component for this actor. Use with caution. **/
+	CActorControllerComponent* GetControllerComponent() const { return m_pActorControllerComponent; }
 
 protected:
 	Cry::DefaultComponents::CAdvancedAnimationComponent* m_pAdvancedAnimationComponent { nullptr };
@@ -571,7 +589,7 @@ public:
 	void OnActionInspect() override;
 	void OnActionInspectEnd() override;
 	void OnActionInteractionStart() override;
-	void OnActionInteraction() override;
+	void OnActionInteractionTick() override;
 	void OnActionInteractionEnd() override;
 	void OnActionCrouchToggle() override { m_pActorControllerComponent->OnActionCrouchToggle(); };
 	void OnActionCrawlToggle() override { m_pActorControllerComponent->OnActionCrawlToggle(); };
@@ -582,6 +600,23 @@ public:
 	void OnActionSprintStop() override { m_pActorControllerComponent->OnActionSprintStop(); };
 	bool IsSprinting() const override { return m_pActorControllerComponent->IsSprinting(); };
 	bool IsJogging() const override { return m_pActorControllerComponent->IsJogging(); };
+
+	/** Is the actor currently interacting with another entity? */
+	bool IsInteracting() const { return m_pInteraction != nullptr; }
+
+	/**
+	Call this to place the actor into "interaction mode". This should be called by any section of code that wants to
+	trigger an interaction with the actor. This will lock out any other attempts to start an interaction until this one
+	has completed. Generally, you will want whatever process is kicked off by the 'OnActionInteractionStart' function to
+	make a call to this at the start of it's specific interaction.
+	**/
+	void InteractionStart() override;
+
+	/** Received at intervals during an on-going interaction. */
+	void InteractionTick() override;
+
+	/** Call this to remove the actor from "interaction mode". This will open the actor up to accepting interactions again. */
+	void InteractionEnd() override;
 
 private:
 	/** If we are interacting with an entity, it is this entity. */
@@ -623,8 +658,10 @@ public:
 	TagID GetPostureTagId(EActorPosture actorPosture);
 
 private:
-	const SActorMannequinParams* m_actorMannequinParams;
-
+	const SActorMannequinParams* m_actorMannequinParams { nullptr };
+	class CProceduralContextAim* m_pProceduralContextAim { nullptr };
+	class CProceduralContextLook* m_pProceduralContextLook { nullptr };
+	IActionController* m_pActionController { nullptr };
 
 	// ***
 	// *** Item System.

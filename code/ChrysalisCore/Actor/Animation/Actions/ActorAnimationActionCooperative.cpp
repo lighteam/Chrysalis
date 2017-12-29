@@ -173,7 +173,7 @@ void CActorAnimationActionCooperative::RemoveTargetFromSlaveContext()
 			pSourceActionController->SetSlaveController(*pTargetActionController, m_scopeContextId, false, m_pTargetOptionalDatabase);
 
 			// Remove the target tag.
-			pTargetActionController->GetContext().state.Set(m_targetTagID, true);
+			pTargetActionController->GetContext().state.Set(m_targetTagID, false);
 		}
 	}
 	else

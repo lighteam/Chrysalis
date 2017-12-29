@@ -298,32 +298,6 @@
                           <signalId domain="Env" guid="d250b16f-d529-4a79-9268-ffbfa4252a80"/>
                         </value>
            </element>
-           <element key="4b0aaa7a-2d86-4c23-b9d1-13d9df5de632" typeGUID="1bcfd811-b8b7-4032-a90c-311dfa4454c6">
-                        <value guid="4b0aaa7a-2d86-4c23-b9d1-13d9df5de632" objectGUID="0b173289-2cf4-4335-8eac-9a2704f9cc27">
-                          <pos x="300" y="77"/>
-                          <functionId domain="Env" guid="0f22767b-6aa6-4edf-92f0-7bcd10cab00e"/>
-                          <inputs>
-                            <element value="Test">
-                              <key type="UInt32" value="1735552885"/>
-                            </element>
-                            <element value="false">
-                              <key type="UInt32" value="1752132708"/>
-                            </element>
-                            <element value="F1">
-                              <key type="UInt32" value="1801812334"/>
-                            </element>
-                            <element value="F1">
-                              <key type="UInt32" value="1851878757"/>
-                            </element>
-                            <element value="true">
-                              <key type="UInt32" value="1886545267"/>
-                            </element>
-                            <element value="false">
-                              <key type="UInt32" value="1919249509"/>
-                            </element>
-                          </inputs>
-                        </value>
-           </element>
            <element key="7d8505ec-0bc7-4f58-85db-97c4524198bc" typeGUID="ad2aee64-0a60-4469-8ec7-38b4b720d30c">
                         <value guid="7d8505ec-0bc7-4f58-85db-97c4524198bc" objectGUID="">
                           <pos x="333" y="552"/>
@@ -333,10 +307,6 @@
           </nodes>
           <links>
            <element srcNodeGUID="b145aca3-e79d-48ac-83e5-e8e361a486f9" dstNodeGUID="cdfb1930-5d42-474a-aa7f-fa296d9294fa">
-                        <srcOutputId type="Idx" value="0"/>
-                        <dstInputId type="Idx" value="0"/>
-           </element>
-           <element srcNodeGUID="cdfb1930-5d42-474a-aa7f-fa296d9294fa" dstNodeGUID="4b0aaa7a-2d86-4c23-b9d1-13d9df5de632">
                         <srcOutputId type="Idx" value="0"/>
                         <dstInputId type="Idx" value="0"/>
            </element>
@@ -353,10 +323,6 @@
                         <dstInputId type="Idx" value="0"/>
            </element>
            <element srcNodeGUID="f0934e37-08ee-4adf-90ce-67e5ddd5bcee" dstNodeGUID="0859803c-8b08-467e-81f7-2d41434d3aab">
-                        <srcOutputId type="Idx" value="0"/>
-                        <dstInputId type="Idx" value="0"/>
-           </element>
-           <element srcNodeGUID="452bcc86-aee8-4e5b-b0e3-b3678ba70163" dstNodeGUID="0859803c-8b08-467e-81f7-2d41434d3aab">
                         <srcOutputId type="Idx" value="0"/>
                         <dstInputId type="Idx" value="0"/>
            </element>

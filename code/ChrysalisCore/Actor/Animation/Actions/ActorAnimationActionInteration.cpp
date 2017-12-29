@@ -10,8 +10,17 @@ namespace Chrysalis
 	x( Interaction ) \
 
 #define INTERACTION_TAGS( x ) \
+	x( InteractionHigh ) /* The general height of the interaction object. */ \
+	x( InteractionMiddle ) \
+	x( InteractionLow ) \
+	x( InteractionGrabObject ) /*  */ \
+	x( InteractionFlipSwitch ) \
+	x( InteractionDeadLift ) \
+	x( InteractionTurnWheel ) \
 
 #define INTERACTION_TAGGROUPS( x ) \
+	x( InteractionHeight ) \
+	x( InteractionMethod ) \
 
 #define INTERACTION_SCOPES( x ) \
 
@@ -49,6 +58,16 @@ void CActorAnimationActionInteraction::Install()
 void CActorAnimationActionInteraction::Enter()
 {
 	CAnimationAction::Enter();
+
+	// Grab the actor in the root scope.
+	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
+
+	// Inform the actor we are taking control of an interation.
+	actor.InteractionStart();
+
+	// TEST!
+	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, true);
+	GetContext().state.Set(m_interactionParams->tagIDs.InteractionGrabObject, true);
 }
 
 
@@ -61,6 +80,16 @@ void CActorAnimationActionInteraction::Fail(EActionFailure actionFailure)
 void CActorAnimationActionInteraction::Exit()
 {
 	CAnimationAction::Exit();
+
+	// Grab the actor in the root scope.
+	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
+
+	// Inform the actor we are finished with an interation.
+	actor.InteractionEnd();
+
+	// TEST!
+	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, false);
+	GetContext().state.Set(m_interactionParams->tagIDs.InteractionGrabObject, false);
 }
 
 
@@ -76,15 +105,9 @@ IAction::EStatus CActorAnimationActionInteraction::Update(float timePassed)
 {
 	CAnimationAction::Update(timePassed);
 
-	// Grab the actor in the root scope.
-	const IScope& rootScope = GetRootScope();
-	CActorComponent& actor = *CActorComponent::GetActor(rootScope.GetEntityId());
-
 	// Update the fragments and tags if they are different.
-	if (rootScope.IsDifferent(m_fragmentID, m_fragTags))
-	{
+	if (m_rootScope->IsDifferent(m_fragmentID, m_fragTags))
 		SetFragment(m_fragmentID, m_fragTags);
-	}
 
 	return EStatus();
 }

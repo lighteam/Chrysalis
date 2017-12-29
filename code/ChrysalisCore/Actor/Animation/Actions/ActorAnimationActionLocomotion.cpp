@@ -1,6 +1,7 @@
 #include <StdAfx.h>
 
 #include "ActorAnimationActionLocomotion.h"
+#include <Actor/ActorControllerComponent.h>
 
 
 namespace Chrysalis
@@ -8,11 +9,6 @@ namespace Chrysalis
 #define LOCOMOTION_FRAGMENTS( x ) \
 	x( Idle ) \
 	x( Move ) \
-	//x( Motion_Idle ) \
-	//x( Motion_IdleTurn ) \
-	//x( Motion_IdleTurnBig ) \
-	//x( Motion_Move ) \
-	//x( Motion_Air )
 
 #define LOCOMOTION_TAGS( x ) \
 	x( NoMovement )  /* LocalMoveDirection. */  \
@@ -97,11 +93,10 @@ IAction::EStatus CActorAnimationActionLocomotion::Update(float timePassed)
 	CAnimationAction::Update(timePassed);
 
 	// Grab the actor in the root scope.
-	const IScope& rootScope = GetRootScope();
-	CActorComponent& actor = *CActorComponent::GetActor(rootScope.GetEntityId());
+	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
 
 	// Set stance tags if they have changed.
-	const auto newStance = actor.GetStance();
+	const auto newStance = actor.GetControllerComponent()->GetStance();
 	if (m_lastStance != newStance)
 	{
 		TagID tagId = actor.GetStanceTagId(newStance);
@@ -112,7 +107,7 @@ IAction::EStatus CActorAnimationActionLocomotion::Update(float timePassed)
 	m_lastStance = newStance;
 
 	// Set posture tags if they have changed.
-	const auto newPosture = actor.GetPosture();
+	const auto newPosture = actor.GetControllerComponent()->GetPosture();
 	if (m_lastPosture != newPosture)
 	{
 		TagID tagId = actor.GetPostureTagId(newPosture);
@@ -136,10 +131,8 @@ IAction::EStatus CActorAnimationActionLocomotion::Update(float timePassed)
 	}
 
 	// Update the fragments and tags if they are different.
-	if (rootScope.IsDifferent(m_fragmentID, m_fragTags))
-	{
+	if (m_rootScope->IsDifferent(m_fragmentID, m_fragTags))
 		SetFragment(m_fragmentID, m_fragTags);
-	}
 
 	return EStatus();
 }

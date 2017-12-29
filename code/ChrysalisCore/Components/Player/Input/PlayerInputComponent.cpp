@@ -533,7 +533,7 @@ void CPlayerInputComponent::OnActionInteraction(int activationMode, float value)
 		break;
 
 		case eAAM_OnHold:
-			IF_ACTOR_DO(OnActionInteraction);
+			IF_ACTOR_DO(OnActionInteractionTick);
 		break;
 
 		case eAAM_OnRelease:

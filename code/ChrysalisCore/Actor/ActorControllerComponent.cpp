@@ -319,10 +319,10 @@ void CActorControllerComponent::UpdateMovementRequest(float frameTime)
 
 void CActorControllerComponent::UpdateLookDirectionRequest(float frameTime)
 {
-	/** The angular velocity maximum (Full rotations / second). */
+	// The angular velocity maximum (Full rotations / second).
 	const float angularVelocityMax = g_PI2 * 1.5f;
 
-	/** The catchup speed (Full rotations / second). */
+	// The catchup speed (Full rotations / second).
 	const float catchupSpeed = g_PI2 * 1.2f;
 
 	// If there's a player controlling us, we can query them for inputs and camera and apply that to our rotation.
@@ -337,14 +337,14 @@ void CActorControllerComponent::UpdateLookDirectionRequest(float frameTime)
 			if (pPlayer->IsViewFirstPerson())
 				facingDir = CCamera::CreateAnglesYPR(Matrix33(m_lookOrientation));
 			else
-				facingDir = CCamera::CreateAnglesYPR(m_movementRequest);
+				facingDir = CCamera::CreateAnglesYPR(m_movementRequest.GetNormalizedFast());
 
 			// Take the direction they are facing as a target.
 			//const Vec3 lowerBodyDir = CCamera::CreateViewdir(Ang3(DEG2RAD(GetLowerBodyRotation(pPlayerInput->GetMovementDirectionFlags())), 0.0f, 0.0f));
 			//CryWatch("lowerBodyDir = %f, %f, %f", lowerBodyDir.x, lowerBodyDir.y, lowerBodyDir.z);
 			//m_movementRequest = pPlayer->GetCamera()->GetRotation() * lowerBodyDir * moveSpeed;
 			//if (pPlayer->IsThirdPerson())
-			//	facingDir = CCamera::CreateAnglesYPR(m_movementRequest);
+			//	facingDir = CCamera::CreateAnglesYPR(m_movementRequest.GetNormalizedFast());
 			//else
 			//	facingDir = CCamera::CreateAnglesYPR(Matrix33(m_lookOrientation) * lowerBodyDir);
 

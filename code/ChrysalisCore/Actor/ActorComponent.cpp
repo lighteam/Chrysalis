@@ -17,6 +17,8 @@
 #include <Actor/Movement/StateMachine/ActorStateEvents.h>
 #include <Actor/Movement/StateMachine/ActorStateUtility.h>
 #include <Actor/ActorControllerComponent.h>
+#include <Animation/ProceduralContext/ProceduralContextAim.h>
+#include <Animation/ProceduralContext/ProceduralContextLook.h>
 #include "Components/Player/PlayerComponent.h"
 #include <Components/Player/Camera/ICameraComponent.h>
 #include <Components/Interaction/EntityAwarenessComponent.h>
@@ -470,10 +472,10 @@ void CActorComponent::OnResetState()
 	{
 		m_pAdvancedAnimationComponent->SetCharacterFile(m_geometryFirstPerson.value);
 		m_pAdvancedAnimationComponent->SetDefaultScopeContextName("Char1P");
-		
+
 		// TODO: In order to switch the models out, we need to load and reset - but at present that is not removing the
 		// existing models. 
-		
+
 		//m_pAdvancedAnimationComponent->LoadFromDisk();
 		//m_pAdvancedAnimationComponent->ResetCharacter();
 	}
@@ -493,15 +495,17 @@ void CActorComponent::OnResetState()
 	QueueAction(*locomotionAction);
 
 	// HACK: the CAdvancedAnimation doesn't allow us access to the action controller. This is a workaround.
-	if (auto *pActionController = GetActionController())
+	m_pActionController = gEnv->pGameFramework->GetMannequinInterface().FindActionController(*GetEntity());
+
+	if (m_pActionController)
 	{
 		// The mannequin tags for an actor will need to be loaded. Because these are found in the controller definition,
 		// they are potentially different for every actor. 
-		m_actorMannequinParams = GetMannequinUserParams<SActorMannequinParams>(pActionController->GetContext());
+		m_actorMannequinParams = GetMannequinUserParams<SActorMannequinParams>(m_pActionController->GetContext());
 
 		// HACK: quick way to get some debug info out. Need to filter it to only one entity to prevent overlays.
 		if (strcmp(GetEntity()->GetName(), "Hero") == 0)
-			pActionController->SetFlag(AC_DebugDraw, true);
+			m_pActionController->SetFlag(AC_DebugDraw, true);
 	}
 
 	// Mannequin should also be reset.
@@ -517,7 +521,7 @@ void CActorComponent::OnResetState()
 
 void CActorComponent::ResetMannequin()
 {
-	//if (m_pActionController)
+	if (m_pActionController)
 	{
 		//if (IsPlayer() && !IsAIControlled())
 		//{
@@ -539,36 +543,30 @@ void CActorComponent::ResetMannequin()
 		//	CActionItemIdle *itemIdle = new CActionItemIdle(EActorActionPriority::eAAP_Lowest, m_actorMannequinParams->fragmentIDs.Idle, m_actorMannequinParams->fragmentIDs.IdleBreak, TAG_STATE_EMPTY, *this);
 		//	QueueAction(*itemIdle);
 
-		//    CPlayerMovementAction *movementAction = new CPlayerMovementAction(EActorActionPriority::eAAP_Movement);
-		//    QueueAction(*movementAction);
+		//	CPlayerMovementAction *movementAction = new CPlayerMovementAction(EActorActionPriority::eAAP_Movement);
+		//	QueueAction(*movementAction);
 
-		// Locomotion action.
-		auto locomotionAction = new CActorAnimationActionLocomotion();
-		QueueAction(*locomotionAction);
+			// Locomotion action.
+			auto locomotionAction = new CActorAnimationActionLocomotion();
+			QueueAction(*locomotionAction);
 
-		// TODO: Get back to aiming and looking after some interaction is sorted.
+			// Aim actions.
+			if (CActorAnimationActionAimPose::IsSupported(m_pActionController->GetContext())
+				&& CActorAnimationActionAiming::IsSupported(m_pActionController->GetContext()))
+			{
+				m_pProceduralContextAim = static_cast<CProceduralContextAim*>(m_pActionController->FindOrCreateProceduralContext(CProceduralContextAim::GetCID()));
+				QueueAction(*new CActorAnimationActionAimPose());
+				QueueAction(*new CActorAnimationActionAiming());
+			}
 
-		// Aim actions.
-		//if (CActorAnimationActionAimPose::IsSupported(m_pActionController->GetContext())
-		//	&& CActorAnimationActionAiming::IsSupported(m_pActionController->GetContext()))
-		//{
-		//	// TODO: I presume these are needed to do things.
-		//	//m_pProceduralContextAim = static_cast<CProceduralContextAim*>(m_pActionController->FindOrCreateProceduralContext(PROCEDURAL_CONTEXT_AIM_NAME));
-
-		//	QueueAction(*new CActorAnimationActionAimPose());
-		//	QueueAction(*new CActorAnimationActionAiming());
-		//}
-
-		//// Look actions.
-		//if (CActorAnimationActionLookPose::IsSupported(m_pActionController->GetContext()) 
-		//	&& CActorAnimationActionLooking::IsSupported(m_pActionController->GetContext()))
-		//{
-		//	// TODO: I presume these are needed to do things.
-		//	//m_pProceduralContextLook = static_cast<CProceduralContextLook*>(m_pActionController->FindOrCreateProceduralContext(PROCEDURAL_CONTEXT_LOOK_NAME));
-
-		//	QueueAction(*new CActorAnimationActionLookPose());
-		//	QueueAction(*new CActorAnimationActionLooking());
-		//}
+			// Look actions.
+			if (CActorAnimationActionLookPose::IsSupported(m_pActionController->GetContext())
+				&& CActorAnimationActionLooking::IsSupported(m_pActionController->GetContext()))
+			{
+				m_pProceduralContextLook = static_cast<CProceduralContextLook*>(m_pActionController->FindOrCreateProceduralContext(CProceduralContextLook::GetCID()));
+				QueueAction(*new CActorAnimationActionLookPose());
+				QueueAction(*new CActorAnimationActionLooking());
+			}
 
 		//	m_weaponFPAiming.ResetMannequin();
 		//}
@@ -726,6 +724,10 @@ void CActorComponent::OnActionInspectEnd()
 
 void CActorComponent::OnActionInteractionStart()
 {
+	// You shouldn't be allowed to start another interaction before the last one is completed.
+	if (m_pInteraction != nullptr)
+		return;
+
 	if (m_pAwareness)
 	{
 		auto results = m_pAwareness->GetNearDotFiltered();
@@ -768,8 +770,8 @@ void CActorComponent::OnActionInteractionStart()
 					m_pInteraction->OnInteractionStart();
 
 					// HACK: Doesn't belong here, test to see if we can queue an interaction action.
-					//auto action = new CActorAnimationActionInteraction();
-					//QueueAction(*action);
+					auto action = new CActorAnimationActionInteraction();
+					QueueAction(*action);
 				}
 			}
 		}
@@ -777,7 +779,7 @@ void CActorComponent::OnActionInteractionStart()
 }
 
 
-void CActorComponent::OnActionInteraction()
+void CActorComponent::OnActionInteractionTick()
 {
 	if (m_pInteraction)
 	{
@@ -802,10 +804,27 @@ void CActorComponent::OnActionInteractionEnd()
 	{
 		CryLogAlways("Player stopped interacting with nothing");
 	}
+}
 
+
+void CActorComponent::InteractionStart()
+{
+	// You shouldn't be allowed to start another interaction before the last one is completed.
+	if (m_pInteraction != nullptr)
+		return;
+}
+
+
+void CActorComponent::InteractionTick()
+{
+}
+
+
+void CActorComponent::InteractionEnd()
+{
 	// No longer valid.
 	m_pInteraction = nullptr;
-	m_interactionEntityId = INVALID_ENTITYID;
+	m_interactionEntityId = INVALID_ENTITYID; // HACK: FIX: This seems weak, look for a better way to handle keeping an entity Id for later.
 }
 
 
@@ -815,9 +834,7 @@ void CActorComponent::OnActionInteractionEnd()
 
 IActionController* CActorComponent::GetActionController() const
 {
-	// HACK: the CAdvancedAnimation doesn't allow us to queue actions yet, this is a workaround. It might be better to get CryTek to implement
-	// this in the CAdvancedAnimation class instead. This will do for now.
-	return gEnv->pGameFramework->GetMannequinInterface().FindActionController(*GetEntity());
+	return m_pActionController;
 }
 
 
