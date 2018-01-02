@@ -42,7 +42,7 @@ void CSecurityPadComponent::OnResetState()
 }
 
 
-void CSecurityPadComponent::OnInteractionExamineStart()
+void CSecurityPadComponent::OnInteractionExamineStart(IActorComponent& actor)
 {
 	gEnv->pLog->LogAlways("OnInteractionExamineStart fired.");
 
@@ -55,7 +55,7 @@ void CSecurityPadComponent::OnInteractionExamineStart()
 }
 
 
-void CSecurityPadComponent::OnInteractionExamineComplete()
+void CSecurityPadComponent::OnInteractionExamineComplete(IActorComponent& actor)
 {
 	gEnv->pLog->LogAlways("OnInteractionExamineComplete fired.");
 
@@ -68,9 +68,9 @@ void CSecurityPadComponent::OnInteractionExamineComplete()
 }
 
 
-void CSecurityPadComponent::OnInteractionExamineCancel()
+void CSecurityPadComponent::OnInteractionExamineCancel(IActorComponent& actor)
 {
 	// Same result as completing.
-	OnInteractionExamineComplete();
+	OnInteractionExamineComplete(actor);
 }
 }

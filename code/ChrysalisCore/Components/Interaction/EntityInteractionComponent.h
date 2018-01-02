@@ -48,10 +48,10 @@ public:
 	IInteractionWeakPtr SelectInteractionVerb(string verb);
 	void ClearInteractionVerb();
 
-	void OnInteractionStart();
-	void OnInteractionTick();
-	void OnInteractionComplete();
-	void OnInteractionCancel();
+	void OnInteractionStart(IActorComponent& actor);
+	void OnInteractionTick(IActorComponent& actor);
+	void OnInteractionComplete(IActorComponent& actor);
+	void OnInteractionCancel(IActorComponent& actor);
 
 private:
 	std::vector<IInteractionPtr> m_Interactions;

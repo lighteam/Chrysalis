@@ -326,7 +326,7 @@ void CPlayerInputComponent::OnActionEscape(int activationMode, float value)
 		CryLogAlways("Escape");
 
 		// Notify listeners.
-		for (auto& it : m_listenersSpecial.GetListeners())
+		for (auto it : m_listenersSpecial.GetListeners())
 			it->OnInputSpecialEsc();
 	}
 }
@@ -339,7 +339,7 @@ void CPlayerInputComponent::OnActionExamine(int activationMode, float value)
 		CryLogAlways("Examine");
 
 		// Notify listeners.
-		for (auto& it : m_listenersSpecial.GetListeners())
+		for (auto it : m_listenersSpecial.GetListeners())
 			it->OnInputSpecialExamine();
 	}
 }

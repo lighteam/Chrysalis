@@ -547,26 +547,26 @@ void CActorComponent::ResetMannequin()
 		//	QueueAction(*movementAction);
 
 			// Locomotion action.
-			auto locomotionAction = new CActorAnimationActionLocomotion();
-			QueueAction(*locomotionAction);
+		auto locomotionAction = new CActorAnimationActionLocomotion();
+		QueueAction(*locomotionAction);
 
-			// Aim actions.
-			if (CActorAnimationActionAimPose::IsSupported(m_pActionController->GetContext())
-				&& CActorAnimationActionAiming::IsSupported(m_pActionController->GetContext()))
-			{
-				m_pProceduralContextAim = static_cast<CProceduralContextAim*>(m_pActionController->FindOrCreateProceduralContext(CProceduralContextAim::GetCID()));
-				QueueAction(*new CActorAnimationActionAimPose());
-				QueueAction(*new CActorAnimationActionAiming());
-			}
+		// Aim actions.
+		if (CActorAnimationActionAimPose::IsSupported(m_pActionController->GetContext())
+			&& CActorAnimationActionAiming::IsSupported(m_pActionController->GetContext()))
+		{
+			m_pProceduralContextAim = static_cast<CProceduralContextAim*>(m_pActionController->FindOrCreateProceduralContext(CProceduralContextAim::GetCID()));
+			QueueAction(*new CActorAnimationActionAimPose());
+			QueueAction(*new CActorAnimationActionAiming());
+		}
 
-			// Look actions.
-			if (CActorAnimationActionLookPose::IsSupported(m_pActionController->GetContext())
-				&& CActorAnimationActionLooking::IsSupported(m_pActionController->GetContext()))
-			{
-				m_pProceduralContextLook = static_cast<CProceduralContextLook*>(m_pActionController->FindOrCreateProceduralContext(CProceduralContextLook::GetCID()));
-				QueueAction(*new CActorAnimationActionLookPose());
-				QueueAction(*new CActorAnimationActionLooking());
-			}
+		// Look actions.
+		if (CActorAnimationActionLookPose::IsSupported(m_pActionController->GetContext())
+			&& CActorAnimationActionLooking::IsSupported(m_pActionController->GetContext()))
+		{
+			m_pProceduralContextLook = static_cast<CProceduralContextLook*>(m_pActionController->FindOrCreateProceduralContext(CProceduralContextLook::GetCID()));
+			QueueAction(*new CActorAnimationActionLookPose());
+			QueueAction(*new CActorAnimationActionLooking());
+		}
 
 		//	m_weaponFPAiming.ResetMannequin();
 		//}
@@ -618,7 +618,7 @@ void CActorComponent::OnActionItemDrop()
 		{
 			if (auto pInteraction = pInteractor->GetInteraction("interaction_drop")._Get())
 			{
-				pInteraction->OnInteractionStart();
+				pInteraction->OnInteractionStart(*this);
 			}
 		}
 	}
@@ -638,7 +638,7 @@ void CActorComponent::OnActionItemToss()
 		{
 			if (auto pInteraction = pInteractor->GetInteraction("interaction_toss")._Get())
 			{
-				pInteraction->OnInteractionStart();
+				pInteraction->OnInteractionStart(*this);
 			}
 		}
 	}
@@ -666,7 +666,7 @@ void CActorComponent::OnActionBarUse(int actionBarId)
 					auto verb = verbs [actionBarId - 1];
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 
-					pInteraction->OnInteractionStart();
+					pInteraction->OnInteractionStart(*this);
 				}
 				else
 				{
@@ -708,7 +708,7 @@ void CActorComponent::OnActionInspect()
 
 					// #HACK: Another test - just calling the interaction directly instead.
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
-					pInteraction->OnInteractionStart();
+					pInteraction->OnInteractionStart(*this);
 				}
 			}
 		}
@@ -767,11 +767,11 @@ void CActorComponent::OnActionInteractionStart()
 					// #HACK: Another test - just calling the interaction directly instead.
 					m_pInteraction = pInteractor->GetInteraction(verb)._Get();
 					CryLogAlways("Player started interacting with: %s", m_pInteraction->GetVerbUI());
-					m_pInteraction->OnInteractionStart();
+					m_pInteraction->OnInteractionStart(*this);
 
 					// HACK: Doesn't belong here, test to see if we can queue an interaction action.
-					auto action = new CActorAnimationActionInteraction();
-					QueueAction(*action);
+					//auto action = new CActorAnimationActionInteraction();
+					//QueueAction(*action);
 				}
 			}
 		}
@@ -784,7 +784,7 @@ void CActorComponent::OnActionInteractionTick()
 	if (m_pInteraction)
 	{
 		CryWatch("Interacting with: %s", m_pInteraction->GetVerbUI());
-		m_pInteraction->OnInteractionTick();
+		m_pInteraction->OnInteractionTick(*this);
 	}
 	else
 	{
@@ -798,7 +798,7 @@ void CActorComponent::OnActionInteractionEnd()
 	if (m_pInteraction)
 	{
 		CryLogAlways("Player stopped interacting with: %s", m_pInteraction->GetVerbUI());
-		m_pInteraction->OnInteractionComplete();
+		m_pInteraction->OnInteractionComplete(*this);
 	}
 	else
 	{

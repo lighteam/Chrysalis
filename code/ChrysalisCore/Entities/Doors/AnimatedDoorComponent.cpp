@@ -59,7 +59,7 @@ void CAnimatedDoorComponent::Initialize()
 }
 
 
-void CAnimatedDoorComponent::OnInteractionInteractStart()
+void CAnimatedDoorComponent::OnInteractionInteractStart(IActorComponent& actor)
 {
 	if (m_pLockableComponent)
 	{

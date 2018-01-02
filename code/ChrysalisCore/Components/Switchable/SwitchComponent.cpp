@@ -77,15 +77,15 @@ void CSwitchComponent::OnResetState()
 }
 
 
-void CSwitchComponent::OnInteractionSwitchToggle()
+void CSwitchComponent::OnInteractionSwitchToggle(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("SwitchToggle fired.");
 		if (m_isSwitchedOn)
-			OnInteractionSwitchOff();
+			OnInteractionSwitchOff(actor);
 		else
-			OnInteractionSwitchOn();
+			OnInteractionSwitchOn(actor);
 
 		// Push the signal out using schematyc.
 		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
@@ -94,7 +94,7 @@ void CSwitchComponent::OnInteractionSwitchToggle()
 }
 
 
-void CSwitchComponent::OnInteractionSwitchOn()
+void CSwitchComponent::OnInteractionSwitchOn(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
@@ -113,7 +113,7 @@ void CSwitchComponent::OnInteractionSwitchOn()
 }
 
 
-void CSwitchComponent::OnInteractionSwitchOff()
+void CSwitchComponent::OnInteractionSwitchOff(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{

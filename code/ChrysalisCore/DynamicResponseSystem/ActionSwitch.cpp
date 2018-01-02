@@ -2,6 +2,8 @@
 
 #include "ActionSwitch.h"
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
+#include "Components/Player/PlayerComponent.h"
+#include "Actor/ActorComponent.h"
 #include "Utility/DRS.h"
 #include <Components/Interaction/EntityInteractionComponent.h>
 
@@ -33,7 +35,8 @@ DRS::IResponseActionInstanceUniquePtr CActionSwitch::Execute(DRS::IResponseInsta
 				auto pInteraction = pInteractor->GetInteraction(verb.GetText())._Get();
 				if (pInteraction)
 				{
-					pInteraction->OnInteractionStart();
+					if (auto pActorComponent = CPlayerComponent::GetLocalActor())
+						pInteraction->OnInteractionStart(*pActorComponent);
 				}
 			}
 		}

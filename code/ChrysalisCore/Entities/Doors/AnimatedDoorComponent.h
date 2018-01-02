@@ -12,8 +12,8 @@ namespace Chrysalis
 {
 class CLockableComponent;
 class CEntityInteractionComponent;
-//class CControlledAnimationComponent;
 class CSimpleAnimationComponent;
+class IActorComponent;
 
 
 /**
@@ -45,20 +45,20 @@ public:
 	}
 
 	// IInteractionInteract
-	void OnInteractionInteractStart() override;
-	void OnInteractionInteractTick() override { gEnv->pLog->LogAlways("OnInteractionInteractTick fired."); };
-	void OnInteractionInteractComplete() override { gEnv->pLog->LogAlways("OnInteractionInteractComplete fired."); };
-	void OnInteractionInteractCancel() override { gEnv->pLog->LogAlways("OnInteractionInteractCancel fired."); };
+	void OnInteractionInteractStart(IActorComponent& actor) override;
+	void OnInteractionInteractTick(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractTick fired."); };
+	void OnInteractionInteractComplete(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractComplete fired."); };
+	void OnInteractionInteractCancel(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractCancel fired."); };
 	// ~IInteractionInteract
 
 	// IInteractionOpenable
-	void OnInteractionOpenableOpen() override { gEnv->pLog->LogAlways("OnInteractionOpenableOpen fired."); };
-	void OnInteractionOpenableClose() override { gEnv->pLog->LogAlways("OnInteractionOpenableClose fired."); };
+	void OnInteractionOpenableOpen(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionOpenableOpen fired."); };
+	void OnInteractionOpenableClose(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionOpenableClose fired."); };
 	// ~IInteractionOpenable
 
 	// IInteractionLockable
-	void OnInteractionLockableLock() override { gEnv->pLog->LogAlways("OnInteractionLockableLock fired."); };
-	void OnInteractionLockableUnlock() override { gEnv->pLog->LogAlways("OnInteractionLockableUnlock fired."); };
+	void OnInteractionLockableLock(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionLockableLock fired."); };
+	void OnInteractionLockableUnlock(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionLockableUnlock fired."); };
 	// ~IInteractionLockable
 
 private:

@@ -58,12 +58,12 @@ void CItemInteractionComponent::ProcessEvent(SEntityEvent& event)
 }
 
 
-void CItemInteractionComponent::OnInteractionItemInspect()
+void CItemInteractionComponent::OnInteractionItemInspect(IActorComponent& actor)
 {
 	// We're already inspecting it, drop it instead.
 	if (m_inspectionState == InspectionState::eInspecting)
 	{
-		OnInteractionItemDrop();
+		OnInteractionItemDrop(actor);
 		return;
 	}
 
@@ -88,12 +88,12 @@ void CItemInteractionComponent::OnInteractionItemInspect()
 }
 
 
-void CItemInteractionComponent::OnInteractionItemPickup()
+void CItemInteractionComponent::OnInteractionItemPickup(IActorComponent& actor)
 {
 	// We're already inspecting it, drop it instead.
 	if (m_inspectionState == InspectionState::ePickingUp)
 	{
-		OnInteractionItemDrop();
+		OnInteractionItemDrop(actor);
 		return;
 	}
 
@@ -116,7 +116,7 @@ void CItemInteractionComponent::OnInteractionItemPickup()
 }
 
 
-void CItemInteractionComponent::OnInteractionItemDrop()
+void CItemInteractionComponent::OnInteractionItemDrop(IActorComponent& actor)
 {
 	gEnv->pLog->LogAlways("OnInteractionItemDrop fired.");
 	m_inspectionState = InspectionState::eDroping;
@@ -141,7 +141,7 @@ void CItemInteractionComponent::OnInteractionItemDrop()
 }
 
 
-void CItemInteractionComponent::OnInteractionItemToss()
+void CItemInteractionComponent::OnInteractionItemToss(IActorComponent& actor)
 {
 	gEnv->pLog->LogAlways("OnInteractionItemToss fired.");
 	m_inspectionState = InspectionState::eTossing;

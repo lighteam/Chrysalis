@@ -35,9 +35,9 @@ public:
 	// ISecurityPadEntityComponent
 
 	// IInteractionExamine
-	void OnInteractionExamineStart() override;;
-	void OnInteractionExamineComplete() override;;
-	void OnInteractionExamineCancel() override;;
+	void OnInteractionExamineStart(IActorComponent& actor) override;;
+	void OnInteractionExamineComplete(IActorComponent& actor) override;;
+	void OnInteractionExamineCancel(IActorComponent& actor) override;;
 	// IInteractionExamine
 
 private:

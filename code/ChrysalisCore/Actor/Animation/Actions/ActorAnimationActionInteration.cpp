@@ -55,6 +55,16 @@ void CActorAnimationActionInteraction::Install()
 }
 
 
+void CActorAnimationActionInteraction::OnAnimationEvent(ICharacterInstance* pCharacter, const AnimEventInstance& event)
+{
+	CryLogAlways("AnimEvent: %s - %s - %s", event.m_EventName, event.m_CustomParameter, event.m_BonePathName);
+
+	// Notify listeners.
+	for (auto it : m_listenersAnimationEvents.GetListeners())
+		it->OnActionAnimationEvent();
+}
+
+
 void CActorAnimationActionInteraction::Enter()
 {
 	CAnimationAction::Enter();
@@ -62,8 +72,8 @@ void CActorAnimationActionInteraction::Enter()
 	// Grab the actor in the root scope.
 	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
 
-	// Inform the actor we are taking control of an interation.
-	actor.InteractionStart();
+	// Inform the actor we are taking control of an interaction.
+	//actor.InteractionStart();
 
 	// TEST!
 	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, true);
@@ -84,8 +94,8 @@ void CActorAnimationActionInteraction::Exit()
 	// Grab the actor in the root scope.
 	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
 
-	// Inform the actor we are finished with an interation.
-	actor.InteractionEnd();
+	// Inform the actor we are finished with an interaction.
+	//actor.InteractionEnd();
 
 	// TEST!
 	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, false);

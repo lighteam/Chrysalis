@@ -27,8 +27,6 @@ class CFlashlightComponent
 	: public IEntityComponent
 	, public IInteractionInteract
 	, public IInteractionSwitch
-	//, public Cry::DefaultComponents::CStaticMeshComponent::IGeometryListener
-	//, public CDynamicLightComponent::IDynamicLightListener
 {
 protected:
 	friend CChrysalisCorePlugin;
@@ -50,25 +48,17 @@ public:
 		return id;
 	}
 
-	// Cry::DefaultComponents::CStaticMeshComponent::IGeometryListener
-	//void OnGeometryResetState() override;
-	// ~Cry::DefaultComponents::CStaticMeshComponent::IGeometryListener
-
-	// CDynamicLightComponent::IDynamicLightListener
-	//void OnDynamicLightResetState() override;
-	// ~CDynamicLightComponent::IDynamicLightListener
-
 	// IInteractionInteract
-	void OnInteractionInteractStart() override { gEnv->pLog->LogAlways("OnInteractionInteractStart fired."); };
-	void OnInteractionInteractTick() override { gEnv->pLog->LogAlways("OnInteractionInteractTick fired."); };
-	void OnInteractionInteractComplete() override { gEnv->pLog->LogAlways("OnInteractionInteractComplete fired."); };
-	void OnInteractionInteractCancel() override { gEnv->pLog->LogAlways("OnInteractionInteractCancel fired."); };
+	void OnInteractionInteractStart(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractStart fired."); };
+	void OnInteractionInteractTick(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractTick fired."); };
+	void OnInteractionInteractComplete(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractComplete fired."); };
+	void OnInteractionInteractCancel(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionInteractCancel fired."); };
 	// ~IInteractionInteract
 
 	// IInteractionSwitch
-	void OnInteractionSwitchToggle() override { gEnv->pLog->LogAlways("OnInteractionSwitchToggle fired."); ToggleSwitch(); };
-	void OnInteractionSwitchOn() override { gEnv->pLog->LogAlways("OnInteractionSwitchOn fired."); Switch(true); };
-	void OnInteractionSwitchOff() override { gEnv->pLog->LogAlways("OnInteractionSwitchOff fired."); Switch(false); };
+	void OnInteractionSwitchToggle(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionSwitchToggle fired."); ToggleSwitch(); };
+	void OnInteractionSwitchOn(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionSwitchOn fired."); Switch(true); };
+	void OnInteractionSwitchOff(IActorComponent& actor) override { gEnv->pLog->LogAlways("OnInteractionSwitchOff fired."); Switch(false); };
 	// ~IInteractionSwitch
 
 	// ***

@@ -300,6 +300,9 @@ public:
 	/** Call this to remove the actor from "interaction mode". This will open the actor up to accepting interactions again. */
 	virtual void InteractionEnd() = 0;
 
+	/** Queue an action onto the animation queue. */
+	virtual void QueueAction(TAction<SAnimationContext>& pAction) = 0;
+		
 	/**
 	Gets action controller.
 	
@@ -631,7 +634,7 @@ private:
 	// ***
 
 public:
-	void QueueAction(TAction<SAnimationContext>& pAction) { m_pAdvancedAnimationComponent->QueueAction(pAction); };
+	void QueueAction(TAction<SAnimationContext>& pAction) override { m_pAdvancedAnimationComponent->QueueAction(pAction); };
 
 	virtual IActionController* GetActionController() const;
 

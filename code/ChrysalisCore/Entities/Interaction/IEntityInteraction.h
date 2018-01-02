@@ -5,19 +5,22 @@
 
 namespace Chrysalis
 {
+class IActorComponent;
+
+
 struct IInteraction
 {
 	/** Called at the start of an interaction. */
-	virtual void OnInteractionStart() {};
+	virtual void OnInteractionStart(IActorComponent& actor) {};
 
 	/** Called each game frame an interaction is ongoing. */
-	virtual void OnInteractionTick() {};
+	virtual void OnInteractionTick(IActorComponent& actor) {};
 
 	/** Called when an interaction is completed normally. */
-	virtual void OnInteractionComplete() {};
+	virtual void OnInteractionComplete(IActorComponent& actor) {};
 
 	/** Called if an interaction is cancelled early. */
-	virtual void OnInteractionCancel() {};
+	virtual void OnInteractionCancel(IActorComponent& actor) {};
 
 	bool IsUseable() const { return true; };
 	virtual const string GetVerb() const { return "interaction_interact"; };
@@ -41,9 +44,9 @@ DECLARE_SHARED_POINTERS(IInteraction);
 
 struct IInteractionExamine
 {
-	virtual void OnInteractionExamineStart() = 0;
-	virtual void OnInteractionExamineComplete() = 0;
-	virtual void OnInteractionExamineCancel() = 0;
+	virtual void OnInteractionExamineStart(IActorComponent& actor) = 0;
+	virtual void OnInteractionExamineComplete(IActorComponent& actor) = 0;
+	virtual void OnInteractionExamineCancel(IActorComponent& actor) = 0;
 };
 
 
@@ -58,9 +61,9 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_examine"; };
-	void OnInteractionStart() override { m_subject->OnInteractionExamineStart(); };
-	void OnInteractionComplete() override { m_subject->OnInteractionExamineComplete(); };
-	void OnInteractionCancel() override { m_subject->OnInteractionExamineCancel(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionExamineStart(actor); };
+	void OnInteractionComplete(IActorComponent& actor) override { m_subject->OnInteractionExamineComplete(actor); };
+	void OnInteractionCancel(IActorComponent& actor) override { m_subject->OnInteractionExamineCancel(actor); };
 
 private:
 	IInteractionExamine* m_subject { nullptr };
@@ -75,10 +78,10 @@ DECLARE_SHARED_POINTERS(CInteractionExamine);
 
 struct IInteractionInteract
 {
-	virtual void OnInteractionInteractStart() = 0;
-	virtual void OnInteractionInteractTick() = 0;
-	virtual void OnInteractionInteractComplete() = 0;
-	virtual void OnInteractionInteractCancel() = 0;
+	virtual void OnInteractionInteractStart(IActorComponent& actor) = 0;
+	virtual void OnInteractionInteractTick(IActorComponent& actor) = 0;
+	virtual void OnInteractionInteractComplete(IActorComponent& actor) = 0;
+	virtual void OnInteractionInteractCancel(IActorComponent& actor) = 0;
 };
 
 
@@ -93,10 +96,10 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_interact"; };
-	void OnInteractionStart() override { m_subject->OnInteractionInteractStart(); };
-	void OnInteractionTick() override { m_subject->OnInteractionInteractTick(); };
-	void OnInteractionComplete() override { m_subject->OnInteractionInteractComplete(); };
-	void OnInteractionCancel() override { m_subject->OnInteractionInteractCancel(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionInteractStart(actor); };
+	void OnInteractionTick(IActorComponent& actor) override { m_subject->OnInteractionInteractTick(actor); };
+	void OnInteractionComplete(IActorComponent& actor) override { m_subject->OnInteractionInteractComplete(actor); };
+	void OnInteractionCancel(IActorComponent& actor) override { m_subject->OnInteractionInteractCancel(actor); };
 
 private:
 	IInteractionInteract* m_subject { nullptr };
@@ -125,7 +128,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_drs"; };
-	void OnInteractionStart() override { m_subject->OnInteractionDRS(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionDRS(); };
 
 private:
 	IInteractionDRS* m_subject { nullptr };
@@ -139,9 +142,9 @@ DECLARE_SHARED_POINTERS(CInteractionDRS);
 
 struct IInteractionSwitch
 {
-	virtual void OnInteractionSwitchToggle() = 0;
-	virtual void OnInteractionSwitchOff() = 0;
-	virtual void OnInteractionSwitchOn() = 0;
+	virtual void OnInteractionSwitchToggle(IActorComponent& actor) = 0;
+	virtual void OnInteractionSwitchOff(IActorComponent& actor) = 0;
+	virtual void OnInteractionSwitchOn(IActorComponent& actor) = 0;
 };
 
 
@@ -156,7 +159,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_switch_toggle"; };
-	void OnInteractionStart() override { m_subject->OnInteractionSwitchToggle(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchToggle(actor); };
 
 private:
 	IInteractionSwitch* m_subject { nullptr };
@@ -175,7 +178,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_switch_on"; };
-	void OnInteractionStart() override { m_subject->OnInteractionSwitchOn(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchOn(actor); };
 
 private:
 	IInteractionSwitch* m_subject { nullptr };
@@ -194,7 +197,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_switch_off"; };
-	void OnInteractionStart() override { m_subject->OnInteractionSwitchOff(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchOff(actor); };
 
 private:
 	IInteractionSwitch* m_subject { nullptr };
@@ -209,10 +212,10 @@ DECLARE_SHARED_POINTERS(CInteractionSwitchOff);
 
 struct IInteractionItem
 {
-	virtual void OnInteractionItemInspect() = 0;
-	virtual void OnInteractionItemPickup() = 0;
-	virtual void OnInteractionItemDrop() = 0;
-	virtual void OnInteractionItemToss() = 0;
+	virtual void OnInteractionItemInspect(IActorComponent& actor) = 0;
+	virtual void OnInteractionItemPickup(IActorComponent& actor) = 0;
+	virtual void OnInteractionItemDrop(IActorComponent& actor) = 0;
+	virtual void OnInteractionItemToss(IActorComponent& actor) = 0;
 };
 
 
@@ -227,7 +230,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_inspect"; };
-	void OnInteractionStart() override { m_subject->OnInteractionItemInspect(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionItemInspect(actor); };
 
 private:
 	IInteractionItem* m_subject { nullptr };
@@ -246,7 +249,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_pickup"; };
-	void OnInteractionStart() override { m_subject->OnInteractionItemPickup(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionItemPickup(actor); };
 
 private:
 	IInteractionItem* m_subject { nullptr };
@@ -265,7 +268,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_drop"; };
-	void OnInteractionStart() override { m_subject->OnInteractionItemDrop(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionItemDrop(actor); };
 
 private:
 	IInteractionItem* m_subject { nullptr };
@@ -284,7 +287,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_toss"; };
-	void OnInteractionStart() override { m_subject->OnInteractionItemToss(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionItemToss(actor); };
 
 private:
 	IInteractionItem* m_subject { nullptr };
@@ -299,8 +302,8 @@ DECLARE_SHARED_POINTERS(CInteractionItemToss);
 
 struct IInteractionOpenable
 {
-	virtual void OnInteractionOpenableOpen() = 0;
-	virtual void OnInteractionOpenableClose() = 0;
+	virtual void OnInteractionOpenableOpen(IActorComponent& actor) = 0;
+	virtual void OnInteractionOpenableClose(IActorComponent& actor) = 0;
 };
 
 
@@ -315,7 +318,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_openable_open"; };
-	void OnInteractionStart() override { m_subject->OnInteractionOpenableOpen(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionOpenableOpen(actor); };
 
 private:
 	IInteractionOpenable* m_subject { nullptr };
@@ -334,7 +337,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_openable_close"; };
-	void OnInteractionStart() override { m_subject->OnInteractionOpenableClose(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionOpenableClose(actor); };
 
 private:
 	IInteractionOpenable* m_subject { nullptr };
@@ -349,8 +352,8 @@ DECLARE_SHARED_POINTERS(CInteractionOpenableClose);
 
 struct IInteractionLockable
 {
-	virtual void OnInteractionLockableLock() = 0;
-	virtual void OnInteractionLockableUnlock() = 0;
+	virtual void OnInteractionLockableLock(IActorComponent& actor) = 0;
+	virtual void OnInteractionLockableUnlock(IActorComponent& actor) = 0;
 };
 
 
@@ -365,7 +368,7 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_lockable_lock"; };
-	void OnInteractionStart() override { m_subject->OnInteractionLockableLock(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionLockableLock(actor); };
 
 private:
 	IInteractionLockable* m_subject { nullptr };
@@ -384,120 +387,10 @@ public:
 	};
 
 	const string GetVerb() const override { return "interaction_lockable_unlock"; };
-	void OnInteractionStart() override { m_subject->OnInteractionLockableUnlock(); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionLockableUnlock(actor); };
 
 private:
 	IInteractionLockable* m_subject { nullptr };
 };
 DECLARE_SHARED_POINTERS(CInteractionLockableUnlock);
-
-
-//// ***
-//// *** Doors.
-//// ***
-//
-//
-//struct IInteractionDoor
-//{
-//	virtual void OnInteractionDoorOpen() = 0;
-//	virtual void OnInteractionDoorClose() = 0;
-//};
-//
-//
-//class CInteractionDoorOpen : public IInteraction
-//{
-//public:
-//	CInteractionDoorOpen(IInteractionDoor* subject) { m_subject = subject; };
-//
-//	const string GetVerb() const override { return "interaction_door_open"; };
-//	void OnInteractionStart() override { m_subject->OnInteractionDoorOpen(); };
-//
-//private:
-//	IInteractionDoor* m_subject { nullptr };
-//};
-//DECLARE_SHARED_POINTERS(CInteractionDoorOpen);
-//
-//
-//class CInteractionDoorClose : public IInteraction
-//{
-//public:
-//	CInteractionDoorClose(IInteractionDoor* subject) { m_subject = subject; };
-//
-//	const string GetVerb() const override { return "interaction_door_close"; };
-//	void OnInteractionStart() override { m_subject->OnInteractionDoorClose(); };
-//
-//private:
-//	IInteractionDoor* m_subject { nullptr };
-//};
-//DECLARE_SHARED_POINTERS(CInteractionDoorClose);
-//
-//
-//// ***
-//// *** Containers.
-//// ***
-//
-//
-//struct IInteractionContainer
-//{
-//	virtual void OnInteractionContainerOpen() = 0;
-//	virtual void OnInteractionContainerClose() = 0;
-//	virtual void OnInteractionContainerLock() = 0;
-//	virtual void OnInteractionContainerUnlock() = 0;
-//};
-//
-//
-//class CInteractionContainerOpen : public IInteraction
-//{
-//public:
-//	CInteractionContainerOpen(IInteractionContainer* subject) { m_subject = subject; };
-//
-//	const string GetVerb() const override { return "interaction_container_open"; };
-//	void OnInteractionStart() override { m_subject->OnInteractionContainerOpen(); };
-//
-//private:
-//	IInteractionContainer* m_subject { nullptr };
-//};
-//DECLARE_SHARED_POINTERS(CInteractionContainerOpen);
-//
-//
-//class CInteractionContainerClose : public IInteraction
-//{
-//public:
-//	CInteractionContainerClose(IInteractionContainer* subject) { m_subject = subject; };
-//
-//	const string GetVerb() const override { return "interaction_container_close"; };
-//	void OnInteractionStart() override { m_subject->OnInteractionContainerClose(); };
-//
-//private:
-//	IInteractionContainer* m_subject { nullptr };
-//};
-//DECLARE_SHARED_POINTERS(CInteractionContainerClose);
-//
-//
-//class CInteractionContainerLock : public IInteraction
-//{
-//public:
-//	CInteractionContainerLock(IInteractionContainer* subject) { m_subject = subject; };
-//
-//	const string GetVerb() const override { return "interaction_container_lock"; };
-//	void OnInteractionStart() override { m_subject->OnInteractionContainerLock(); };
-//
-//private:
-//	IInteractionContainer* m_subject { nullptr };
-//};
-//DECLARE_SHARED_POINTERS(CInteractionContainerLock);
-//
-//
-//class CInteractionContainerUnlock : public IInteraction
-//{
-//public:
-//	CInteractionContainerUnlock(IInteractionContainer* subject) { m_subject = subject; };
-//
-//	const string GetVerb() const override { return "interaction_container_unlock"; };
-//	void OnInteractionStart() override { m_subject->OnInteractionContainerUnlock(); };
-//
-//private:
-//	IInteractionContainer* m_subject { nullptr };
-//};
-//DECLARE_SHARED_POINTERS(CInteractionContainerUnlock);
 }

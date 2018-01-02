@@ -40,12 +40,7 @@ void CFlashlightComponent::Initialize()
 	const auto pEntity = GetEntity();
 
 	m_pGeometryComponent = pEntity->GetOrCreateComponent<Cry::DefaultComponents::CStaticMeshComponent>();
-	// TODO: Replace this functionality with new method from 5.4.
-	//m_pGeometryComponent->AddEventListener(this);
 	m_pDynamicLightComponent = pEntity->GetOrCreateComponent<CDynamicLightComponent>();
-	// TODO: Replace this functionality with new method from 5.4.
-	//m_pDynamicLightComponent->AddEventListener(this);
-
 	m_pRigidBodyComponent = pEntity->GetOrCreateComponent<Cry::DefaultComponents::CRigidBodyComponent>();
 	m_pRigidBodyComponent->m_bSendCollisionSignal = true;
 

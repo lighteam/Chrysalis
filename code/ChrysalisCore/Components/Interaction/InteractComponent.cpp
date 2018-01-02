@@ -3,6 +3,7 @@
 #include "InteractComponent.h"
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 #include <Components/Player/Input/PlayerInputComponent.h>
+#include <Actor/Animation/Actions/ActorAnimationActionInteration.h>
 
 
 namespace Chrysalis
@@ -79,11 +80,21 @@ void CInteractComponent::OnResetState()
 }
 
 
-void CInteractComponent::OnInteractionInteractStart()
+void CInteractComponent::OnInteractionInteractStart(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("OnInteractionInteractStart fired.");
+
+		// Inform the actor we are taking control of an interaction.
+		actor.InteractionStart();
+
+		// We should queue an interaction action to play back an animation for this action.
+		// TODO: This needs to pass in tags to the animation.
+		auto action = new CActorAnimationActionInteraction();
+		actor.QueueAction(*action);
+
+		// Push the signal out using DRS.
 		InformAllLinkedEntities(kInteractStartVerb, true);
 
 		// Push the signal out using schematyc.
@@ -97,11 +108,11 @@ void CInteractComponent::OnInteractionInteractStart()
 }
 
 
-void CInteractComponent::OnInteractionInteractTick()
+void CInteractComponent::OnInteractionInteractTick(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
-		gEnv->pLog->LogAlways("OnInteractionInteractTick fired.");
+		// Push the signal out using DRS.
 		InformAllLinkedEntities(kInteractTickVerb, true);
 
 		SInteractTickSignal interactTickSignal;
@@ -120,30 +131,40 @@ void CInteractComponent::OnInteractionInteractTick()
 }
 
 
-void CInteractComponent::OnInteractionInteractComplete()
+void CInteractComponent::OnInteractionInteractComplete(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("OnInteractionInteractComplete fired.");
+
+		// Push the signal out using DRS.
 		InformAllLinkedEntities(kInteractCompleteVerb, true);
 
 		// Push the signal out using schematyc.
 		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
 			pSchematycObject->ProcessSignal(SInteractCompleteSignal(), GetGUID());
+
+		// Inform the actor we are finished with an interaction.
+		actor.InteractionEnd();
 	}
 }
 
 
-void CInteractComponent::OnInteractionInteractCancel()
+void CInteractComponent::OnInteractionInteractCancel(IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("OnInteractionInteractCancel fired.");
+
+		// Push the signal out using DRS.
 		InformAllLinkedEntities(kInteractCancelVerb, true);
 
 		// Push the signal out using schematyc.
 		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
 			pSchematycObject->ProcessSignal(SInteractCompleteSignal(), GetGUID());
+
+		// Inform the actor we are finished with an interaction.
+		actor.InteractionEnd();
 	}
 }
 

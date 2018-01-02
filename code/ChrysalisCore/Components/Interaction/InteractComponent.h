@@ -65,10 +65,10 @@ public:
 
 
 	// IInteractionInteract
-	virtual void OnInteractionInteractStart() override;
-	virtual void OnInteractionInteractTick() override;
-	virtual void OnInteractionInteractComplete() override;
-	virtual void OnInteractionInteractCancel() override;
+	virtual void OnInteractionInteractStart(IActorComponent& actor) override;
+	virtual void OnInteractionInteractTick(IActorComponent& actor) override;
+	virtual void OnInteractionInteractComplete(IActorComponent& actor) override;
+	virtual void OnInteractionInteractCancel(IActorComponent& actor) override;
 	// ~IInteractionInteract
 
 protected:

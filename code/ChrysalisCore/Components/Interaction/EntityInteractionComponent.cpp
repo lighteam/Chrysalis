@@ -138,30 +138,30 @@ void CEntityInteractionComponent::ClearInteractionVerb()
 }
 
 
-void CEntityInteractionComponent::OnInteractionStart()
+void CEntityInteractionComponent::OnInteractionStart(IActorComponent& actor)
 {
 	if (m_selectedInteraction)
-		m_selectedInteraction->OnInteractionStart();
+		m_selectedInteraction->OnInteractionStart(actor);
 }
 
 
-void CEntityInteractionComponent::OnInteractionTick()
+void CEntityInteractionComponent::OnInteractionTick(IActorComponent& actor)
 {
 	if (m_selectedInteraction)
-		m_selectedInteraction->OnInteractionTick();
+		m_selectedInteraction->OnInteractionTick(actor);
 }
 
 
-void CEntityInteractionComponent::OnInteractionComplete()
+void CEntityInteractionComponent::OnInteractionComplete(IActorComponent& actor)
 {
 	if (m_selectedInteraction)
-		m_selectedInteraction->OnInteractionComplete();
+		m_selectedInteraction->OnInteractionComplete(actor);
 }
 
 
-void CEntityInteractionComponent::OnInteractionCancel()
+void CEntityInteractionComponent::OnInteractionCancel(IActorComponent& actor)
 {
 	if (m_selectedInteraction)
-		m_selectedInteraction->OnInteractionCancel();
+		m_selectedInteraction->OnInteractionCancel(actor);
 }
 }
