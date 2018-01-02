@@ -7,6 +7,18 @@
 
 namespace Chrysalis
 {
+/** Listen for animation events that are triggered while running this action. */
+struct IAnimationEventListener
+{
+	virtual ~IAnimationEventListener() {};
+
+	virtual void OnActionAnimationEnter() = 0;
+	virtual void OnActionAnimationFail(EActionFailure actionFailure) = 0;
+	virtual void OnActionAnimationExit() = 0;
+	virtual void OnActionAnimationEvent(ICharacterInstance* pCharacter, const AnimEventInstance& event) = 0;
+};
+
+
 class CActorAnimationActionInteraction : public CAnimationAction
 {
 public:
@@ -14,14 +26,6 @@ public:
 
 	CActorAnimationActionInteraction();
 	virtual ~CActorAnimationActionInteraction() {};
-
-	/** Listen for animation events that are triggered while running this action. */
-	struct IAnimationEventListener
-	{
-		virtual ~IAnimationEventListener() {};
-
-		virtual void OnActionAnimationEvent() = 0;
-	};
 
 	// IAction
 	void OnInitialise() override;
@@ -34,10 +38,20 @@ public:
 	virtual void OnAnimationEvent(ICharacterInstance* pCharacter, const AnimEventInstance& event) override;
 	// ~IAction
 
+	void AddEventListener(IAnimationEventListener* pListener)
+	{
+		stl::push_back_unique(m_listenersList, pListener);
+	}
+
+	void RemoveEventListener(IAnimationEventListener* pListener)
+	{
+		m_listenersList.remove(pListener);
+	}
+
 private:
 	const struct SMannequinInteractionParams* m_interactionParams;
 
 	/** Listeners for animation events. */
-	TListener<IAnimationEventListener> m_listenersAnimationEvents;
+	std::list<IAnimationEventListener*> m_listenersList;
 };
 }

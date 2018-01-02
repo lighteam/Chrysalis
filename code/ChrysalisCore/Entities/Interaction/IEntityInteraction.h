@@ -8,18 +8,40 @@ namespace Chrysalis
 class IActorComponent;
 
 
+/** An generic definition for interactions fired off by the player during gameplay. */
 struct IInteraction
 {
-	/** Called at the start of an interaction. */
+	/**
+	Called at the start of an interaction. Generally called on a downward keypress.
+	
+	\param [in,out]	actor The actor who triggered this interaction.
+	**/
 	virtual void OnInteractionStart(IActorComponent& actor) {};
 
-	/** Called each game frame an interaction is ongoing. */
+
+	/**
+	Called each game frame an interaction is ongoing. This will be called multiple times, as long as the player is
+	holding down the interaction key / button.
+	
+	\param [in,out]	actor The actor who triggered this interaction.
+	**/
 	virtual void OnInteractionTick(IActorComponent& actor) {};
 
-	/** Called when an interaction is completed normally. */
+
+	/**
+	Called when an interaction is completed normally. Generally called on an upward keypress.
+	
+	\param [in,out]	actor The actor who triggered this interaction.
+	**/
 	virtual void OnInteractionComplete(IActorComponent& actor) {};
 
-	/** Called if an interaction is cancelled early. */
+
+	/**
+	Called if an interaction is cancelled early. This might, for instance, be called if the player hits ESC while
+	still holding down the interaction key / button. It's unlikely to be needed and is only provided for completeness.
+	
+	\param [in,out]	actor The actor who triggered this interaction.
+	**/
 	virtual void OnInteractionCancel(IActorComponent& actor) {};
 
 	bool IsUseable() const { return true; };

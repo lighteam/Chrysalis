@@ -57,11 +57,9 @@ void CActorAnimationActionInteraction::Install()
 
 void CActorAnimationActionInteraction::OnAnimationEvent(ICharacterInstance* pCharacter, const AnimEventInstance& event)
 {
-	CryLogAlways("AnimEvent: %s - %s - %s", event.m_EventName, event.m_CustomParameter, event.m_BonePathName);
-
 	// Notify listeners.
-	for (auto it : m_listenersAnimationEvents.GetListeners())
-		it->OnActionAnimationEvent();
+	for (auto it : m_listenersList)
+		it->OnActionAnimationEvent(pCharacter, event);
 }
 
 
@@ -69,21 +67,25 @@ void CActorAnimationActionInteraction::Enter()
 {
 	CAnimationAction::Enter();
 
-	// Grab the actor in the root scope.
-	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
-
-	// Inform the actor we are taking control of an interaction.
-	//actor.InteractionStart();
-
 	// TEST!
 	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, true);
 	GetContext().state.Set(m_interactionParams->tagIDs.InteractionGrabObject, true);
+
+	auto isEmpty = m_listenersList.empty();
+
+	// Notify listeners.
+	for (auto it : m_listenersList)
+		it->OnActionAnimationEnter();
 }
 
 
 void CActorAnimationActionInteraction::Fail(EActionFailure actionFailure)
 {
 	CAnimationAction::Fail(actionFailure);
+
+	// Notify listeners.
+	for (auto it : m_listenersList)
+		it->OnActionAnimationFail(actionFailure);
 }
 
 
@@ -94,12 +96,13 @@ void CActorAnimationActionInteraction::Exit()
 	// Grab the actor in the root scope.
 	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
 
-	// Inform the actor we are finished with an interaction.
-	//actor.InteractionEnd();
-
 	// TEST!
 	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, false);
 	GetContext().state.Set(m_interactionParams->tagIDs.InteractionGrabObject, false);
+
+	// Notify listeners.
+	for (auto it : m_listenersList)
+		it->OnActionAnimationExit();
 }
 
 

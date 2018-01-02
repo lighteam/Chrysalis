@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Components/Interaction/EntityInteractionComponent.h>
+#include <Actor/Animation/Actions/ActorAnimationActionInteration.h>
 
 
 namespace Chrysalis
@@ -8,6 +9,7 @@ namespace Chrysalis
 class CInteractComponent
 	: public IEntityComponent
 	, public IInteractionInteract
+	, public IAnimationEventListener
 {
 protected:
 	friend CChrysalisCorePlugin;
@@ -71,6 +73,13 @@ public:
 	virtual void OnInteractionInteractCancel(IActorComponent& actor) override;
 	// ~IInteractionInteract
 
+	// IAnimationEventListener
+	virtual void OnActionAnimationEnter() override;
+	virtual void OnActionAnimationFail(EActionFailure actionFailure) override;
+	virtual void OnActionAnimationExit() override;
+	virtual void OnActionAnimationEvent(ICharacterInstance* pCharacter, const AnimEventInstance& event) override;
+	// ~IAnimationEventListener
+
 protected:
 	void InformAllLinkedEntities(string verb, bool isInteractedOn);
 
@@ -90,5 +99,9 @@ protected:
 
 	/** Send an alternative queue signal to DRS if the string is not empty. */
 	Schematyc::CSharedString m_queueSignal;
+
+	/** During the processing cycle for an interaction, this will hold the actor that initiated the interaction. It will
+	be invalid at all other times. */
+	IActorComponent* m_pInteractionActor { nullptr };
 };
 }

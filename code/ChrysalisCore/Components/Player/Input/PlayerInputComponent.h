@@ -4,7 +4,7 @@
 #include <IActionMapManager.h>
 #include <DefaultComponents/Input/InputComponent.h>
 #include "Components/Player/PlayerComponent.h"
-#include "Utility/Listener.h"
+//#include "Utility/Listener.h"
 
 
 namespace Chrysalis
@@ -140,22 +140,18 @@ public:
 	TInputFlags GetMovementDirectionFlags() const { return m_inputFlags; };
 
 
-	/** Listen for 'special' keys and be notified when they are input e.g. ESC, Examine. */
-	struct IInputSpecialListener
-	{
-		virtual ~IInputSpecialListener() {};
+	///** Listen for 'special' keys and be notified when they are input e.g. ESC, Examine. */
+	//struct IInputSpecialListener
+	//{
+	//	virtual ~IInputSpecialListener() {};
 
-		virtual void OnInputSpecialEsc() = 0;
-		virtual void OnInputSpecialExamine() = 0;
-	};
+	//	virtual void OnInputSpecialEsc() = 0;
+	//	virtual void OnInputSpecialExamine() = 0;
+	//};
 
 
-	/**
-	Returns an instance of the special keystroke listener so other code sections can subscribe to special keystrokes.
-
-	\return The special listener.
-	**/
-	TListener<IInputSpecialListener> GetSpecialListener() { return m_listenersSpecial; }
+	///** Get the manager for the listener.*/
+	//TListener<IInputSpecialListener*>GetListenerManager() { return m_listenersSpecial; }
 
 protected:
 	void OnActionEscape(int activationMode, float value);
@@ -301,6 +297,6 @@ private:
 	float m_xiYawFilter { 0.0001f };
 
 	/** Listens for special keystrokes. */
-	TListener<IInputSpecialListener> m_listenersSpecial;
+	//TListener<IInputSpecialListener*> m_listenersSpecial;
 };
 }

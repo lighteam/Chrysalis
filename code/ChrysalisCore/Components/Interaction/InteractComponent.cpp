@@ -3,7 +3,6 @@
 #include "InteractComponent.h"
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 #include <Components/Player/Input/PlayerInputComponent.h>
-#include <Actor/Animation/Actions/ActorAnimationActionInteration.h>
 
 
 namespace Chrysalis
@@ -86,12 +85,11 @@ void CInteractComponent::OnInteractionInteractStart(IActorComponent& actor)
 	{
 		gEnv->pLog->LogAlways("OnInteractionInteractStart fired.");
 
-		// Inform the actor we are taking control of an interaction.
-		actor.InteractionStart();
-
 		// We should queue an interaction action to play back an animation for this action.
 		// TODO: This needs to pass in tags to the animation.
+		m_pInteractionActor = &actor;
 		auto action = new CActorAnimationActionInteraction();
+		action->AddEventListener(this);
 		actor.QueueAction(*action);
 
 		// Push the signal out using DRS.
@@ -143,9 +141,6 @@ void CInteractComponent::OnInteractionInteractComplete(IActorComponent& actor)
 		// Push the signal out using schematyc.
 		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
 			pSchematycObject->ProcessSignal(SInteractCompleteSignal(), GetGUID());
-
-		// Inform the actor we are finished with an interaction.
-		actor.InteractionEnd();
 	}
 }
 
@@ -162,10 +157,36 @@ void CInteractComponent::OnInteractionInteractCancel(IActorComponent& actor)
 		// Push the signal out using schematyc.
 		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
 			pSchematycObject->ProcessSignal(SInteractCompleteSignal(), GetGUID());
-
-		// Inform the actor we are finished with an interaction.
-		actor.InteractionEnd();
 	}
+}
+
+
+void CInteractComponent::OnActionAnimationEnter()
+{
+	// Inform the actor we are taking control of an interaction.
+	m_pInteractionActor->InteractionStart();
+}
+
+
+void CInteractComponent::OnActionAnimationFail(EActionFailure actionFailure)
+{
+	// Inform the actor we are finished with an interaction.
+	m_pInteractionActor->InteractionEnd();
+	m_pInteractionActor = nullptr;
+}
+
+
+void CInteractComponent::OnActionAnimationExit()
+{
+	// Inform the actor we are finished with an interaction.
+	m_pInteractionActor->InteractionEnd();
+	m_pInteractionActor = nullptr;
+}
+
+
+void CInteractComponent::OnActionAnimationEvent(ICharacterInstance * pCharacter, const AnimEventInstance & event)
+{
+	CryLogAlways("CInteractComponent::AnimEvent: %s", event.m_EventName);
 }
 
 
