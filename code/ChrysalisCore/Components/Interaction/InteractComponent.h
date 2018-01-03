@@ -37,6 +37,9 @@ public:
 	const string kInteractCompleteVerb { "interaction_interact_complete" };
 	const string kInteractCancelVerb { "interaction_interact_cancel" };
 
+	const string kInteractAnimationEnterVerb { "interaction_animation_enter" };
+	const string kInteractAnimationFailVerb { "interaction_animation_fail" };
+	const string kInteractAnimationExitVerb { "interaction_animation_exit" };
 
 	struct SInteractStartSignal
 	{
@@ -63,6 +66,54 @@ public:
 	struct SInteractCancelSignal
 	{
 		SInteractCancelSignal() = default;
+	};
+
+
+	struct SInteractAnimationEnterSignal
+	{
+		SInteractAnimationEnterSignal() = default;
+	};
+
+
+	struct SInteractAnimationFailSignal
+	{
+		SInteractAnimationFailSignal() = default;
+	};
+
+
+	struct SInteractAnimationExitSignal
+	{
+		SInteractAnimationExitSignal() = default;
+	};
+
+
+	struct SInteractAnimationEventSignal
+	{
+		SInteractAnimationEventSignal() = default;
+		SInteractAnimationEventSignal(Schematyc::CSharedString eventName,
+			uint32 eventNameLowercaseCRC32,
+			Schematyc::CSharedString customParameter,
+			float time, float endTime,
+			Schematyc::CSharedString bonePathName,
+			Vec3 boneDirection,
+			Vec3 boneOffset)
+			: m_eventName(eventName), 
+			m_eventNameLowercaseCRC32(eventNameLowercaseCRC32),
+			m_customParameter(customParameter),
+			m_time(time), m_endTime(endTime),
+			m_bonePathName(bonePathName),
+			m_boneDirection(boneDirection),
+			m_boneOffset(boneOffset)
+		{}
+
+		Schematyc::CSharedString m_eventName { "" };
+		uint32 m_eventNameLowercaseCRC32 { 0 };
+		Schematyc::CSharedString m_customParameter { "" };
+		float m_time { 0.0f };
+		float m_endTime { 0.0f };
+		Schematyc::CSharedString m_bonePathName { "" };
+		Vec3 m_boneDirection { Vec3(ZERO) };
+		Vec3 m_boneOffset { Vec3(ZERO) };
 	};
 
 

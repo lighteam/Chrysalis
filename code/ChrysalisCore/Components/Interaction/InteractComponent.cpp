@@ -37,12 +37,54 @@ static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractCancel
 }
 
 
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractAnimationEnterSignal>& desc)
+{
+	desc.SetGUID("{9F8551C1-3DC5-42A3-B0D4-8473D1445DDC}"_cry_guid);
+	desc.SetLabel("Animation Enter");
+}
+
+
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractAnimationFailSignal>& desc)
+{
+	desc.SetGUID("{D1F80772-E8CF-4CD4-B9A9-B25BD35A0A9F}"_cry_guid);
+	desc.SetLabel("Animation Fail");
+}
+
+
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractAnimationExitSignal>& desc)
+{
+	desc.SetGUID("{60CA3693-111F-4104-9ABD-866B54DDB8AE}"_cry_guid);
+	desc.SetLabel("Animation Exit");
+}
+
+
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractAnimationEventSignal>& desc)
+{
+	desc.SetGUID("{3DA983C8-0794-4176-8CD6-B92B1A0868D4}"_cry_guid);
+	desc.SetLabel("Animation Event");
+
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_eventName, 'evnm', "EventName", "Event Name", "The name of this animation event.", "");
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_eventNameLowercaseCRC32, 'ncrc', "NameCRC32", "Event Name CRC32", "A CRC32 of the animation event name.", 0);
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_customParameter, 'cstp', "CustomParameter", "Custom Parameter", "A custom parameter from the animation event.", "");
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_time, 'time', "Time", "Time", "Time the event was started.", 0.0f);
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_endTime, 'endt', "EndTime", "End Time", "Time the event will end.", 0.0f);
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_bonePathName, 'bnpt', "BonePathName", "Bone path name", "The path to a bone for this event.", "");
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_boneDirection, 'bndr', "BoneDirection", "Bone Direction", "Bone direction.", Vec3(ZERO));
+	desc.AddMember(&CInteractComponent::SInteractAnimationEventSignal::m_boneOffset, 'bnof', "BoneOffset", "Bone offset", "Bone offset.", Vec3(ZERO));
+}
+
+
 void CInteractComponent::Register(Schematyc::CEnvRegistrationScope& componentScope)
 {
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractStartSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractTickSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractCompleteSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractCancelSignal));
+
+	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationEnterSignal));
+	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationFailSignal));
+	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationExitSignal));
+	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationEventSignal));
 }
 
 
@@ -165,6 +207,13 @@ void CInteractComponent::OnActionAnimationEnter()
 {
 	// Inform the actor we are taking control of an interaction.
 	m_pInteractionActor->InteractionStart();
+
+	// Push the signal out using DRS.
+	InformAllLinkedEntities(kInteractAnimationEnterVerb, true);
+
+	// Push the signal out using schematyc.
+	if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
+		pSchematycObject->ProcessSignal(SInteractAnimationEnterSignal(), GetGUID());
 }
 
 
@@ -172,6 +221,14 @@ void CInteractComponent::OnActionAnimationFail(EActionFailure actionFailure)
 {
 	// Inform the actor we are finished with an interaction.
 	m_pInteractionActor->InteractionEnd();
+
+	// Push the signal out using DRS.
+	InformAllLinkedEntities(kInteractAnimationFailVerb, true);
+
+	// Push the signal out using schematyc.
+	if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
+		pSchematycObject->ProcessSignal(SInteractAnimationFailSignal(), GetGUID());
+
 	m_pInteractionActor = nullptr;
 }
 
@@ -180,6 +237,14 @@ void CInteractComponent::OnActionAnimationExit()
 {
 	// Inform the actor we are finished with an interaction.
 	m_pInteractionActor->InteractionEnd();
+
+	// Push the signal out using DRS.
+	InformAllLinkedEntities(kInteractAnimationExitVerb, true);
+
+	// Push the signal out using schematyc.
+	if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
+		pSchematycObject->ProcessSignal(SInteractAnimationExitSignal(), GetGUID());
+
 	m_pInteractionActor = nullptr;
 }
 
@@ -187,6 +252,20 @@ void CInteractComponent::OnActionAnimationExit()
 void CInteractComponent::OnActionAnimationEvent(ICharacterInstance * pCharacter, const AnimEventInstance & event)
 {
 	CryLogAlways("CInteractComponent::AnimEvent: %s", event.m_EventName);
+
+	// Push the signal out using DRS.
+	//InformAllLinkedEntities(kInteractAnimationExitVerb, true);
+	
+	// Push the signal out using schematyc.
+	if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
+		pSchematycObject->ProcessSignal(SInteractAnimationEventSignal(Schematyc::CSharedString(event.m_EventName),
+			event.m_EventNameLowercaseCRC32,
+			Schematyc::CSharedString(event.m_CustomParameter),
+			float(event.m_time),
+			float(event.m_endTime),
+			Schematyc::CSharedString(event.m_BonePathName),
+			event.m_vDir,
+			event.m_vOffset), GetGUID());
 }
 
 
