@@ -30,13 +30,6 @@ static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractComple
 }
 
 
-static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractCancelSignal>& desc)
-{
-	desc.SetGUID("{42532226-2D75-4AA6-92C4-AE4EB8DC5596}"_cry_guid);	
-	desc.SetLabel("Interact Cancel");
-}
-
-
 static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractAnimationEnterSignal>& desc)
 {
 	desc.SetGUID("{9F8551C1-3DC5-42A3-B0D4-8473D1445DDC}"_cry_guid);
@@ -79,7 +72,6 @@ void CInteractComponent::Register(Schematyc::CEnvRegistrationScope& componentSco
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractStartSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractTickSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractCompleteSignal));
-	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractCancelSignal));
 
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationEnterSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationFailSignal));
@@ -96,6 +88,9 @@ void CInteractComponent::ReflectType(Schematyc::CTypeDesc<CInteractComponent>& d
 	desc.SetDescription("An interaction between a player and an entity.");
 	desc.SetIcon("icons:ObjectTypes/light.ico");
 	desc.SetComponentFlags({ IEntityComponent::EFlags::None });
+
+	// Mark the entity interaction component as a hard requirement.
+	desc.AddComponentInteraction(SEntityComponentRequirements::EType::HardDependency, CEntityInteractionComponent::IID());
 
 	desc.AddMember(&CInteractComponent::m_isEnabled, 'isen', "IsEnabled", "IsEnabled", "Is this interaction currently enabled.", true);
 	desc.AddMember(&CInteractComponent::m_isSingleUseOnly, 'issi', "IsSingleUseOnly", "Single Use Only", "Is this Interact only able to be used once.", false);
@@ -121,15 +116,20 @@ void CInteractComponent::OnResetState()
 }
 
 
-void CInteractComponent::OnInteractionInteractStart(IActorComponent& actor)
+void CInteractComponent::OnInteractionInteractStart(IInteraction& pInteraction, IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("OnInteractionInteractStart fired.");
 
-		// We should queue an interaction action to play back an animation for this action.
-		// TODO: This needs to pass in tags to the animation.
 		m_pInteractionActor = &actor;
+		m_interaction = &pInteraction;
+
+		// Inform the actor we are taking control of an interaction.
+		m_pInteractionActor->InteractionStart(m_interaction);
+
+		// We should queue an animation for this action.
+		// TODO: This needs to pass in tags to the animation.
 		auto action = new CActorAnimationActionInteraction();
 		action->AddEventListener(this);
 		actor.QueueAction(*action);
@@ -148,7 +148,7 @@ void CInteractComponent::OnInteractionInteractStart(IActorComponent& actor)
 }
 
 
-void CInteractComponent::OnInteractionInteractTick(IActorComponent& actor)
+void CInteractComponent::OnInteractionInteractTick(IInteraction& pInteraction, IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
@@ -171,7 +171,7 @@ void CInteractComponent::OnInteractionInteractTick(IActorComponent& actor)
 }
 
 
-void CInteractComponent::OnInteractionInteractComplete(IActorComponent& actor)
+void CInteractComponent::OnInteractionInteractComplete(IInteraction& pInteraction, IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
@@ -187,27 +187,8 @@ void CInteractComponent::OnInteractionInteractComplete(IActorComponent& actor)
 }
 
 
-void CInteractComponent::OnInteractionInteractCancel(IActorComponent& actor)
-{
-	if (m_isEnabled)
-	{
-		gEnv->pLog->LogAlways("OnInteractionInteractCancel fired.");
-
-		// Push the signal out using DRS.
-		InformAllLinkedEntities(kInteractCancelVerb, true);
-
-		// Push the signal out using schematyc.
-		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
-			pSchematycObject->ProcessSignal(SInteractCompleteSignal(), GetGUID());
-	}
-}
-
-
 void CInteractComponent::OnActionAnimationEnter()
 {
-	// Inform the actor we are taking control of an interaction.
-	m_pInteractionActor->InteractionStart();
-
 	// Push the signal out using DRS.
 	InformAllLinkedEntities(kInteractAnimationEnterVerb, true);
 
@@ -220,7 +201,7 @@ void CInteractComponent::OnActionAnimationEnter()
 void CInteractComponent::OnActionAnimationFail(EActionFailure actionFailure)
 {
 	// Inform the actor we are finished with an interaction.
-	m_pInteractionActor->InteractionEnd();
+	m_pInteractionActor->InteractionEnd(m_interaction);
 
 	// Push the signal out using DRS.
 	InformAllLinkedEntities(kInteractAnimationFailVerb, true);
@@ -230,13 +211,14 @@ void CInteractComponent::OnActionAnimationFail(EActionFailure actionFailure)
 		pSchematycObject->ProcessSignal(SInteractAnimationFailSignal(), GetGUID());
 
 	m_pInteractionActor = nullptr;
+	m_interaction = nullptr;
 }
 
 
 void CInteractComponent::OnActionAnimationExit()
 {
 	// Inform the actor we are finished with an interaction.
-	m_pInteractionActor->InteractionEnd();
+	m_pInteractionActor->InteractionEnd(m_interaction);
 
 	// Push the signal out using DRS.
 	InformAllLinkedEntities(kInteractAnimationExitVerb, true);
@@ -246,6 +228,7 @@ void CInteractComponent::OnActionAnimationExit()
 		pSchematycObject->ProcessSignal(SInteractAnimationExitSignal(), GetGUID());
 
 	m_pInteractionActor = nullptr;
+	m_interaction = nullptr;
 }
 
 
@@ -254,7 +237,7 @@ void CInteractComponent::OnActionAnimationEvent(ICharacterInstance * pCharacter,
 	CryLogAlways("CInteractComponent::AnimEvent: %s", event.m_EventName);
 
 	// Push the signal out using DRS.
-	//InformAllLinkedEntities(kInteractAnimationExitVerb, true);
+	InformAllLinkedEntities(kInteractAnimationEventVerb, true);
 	
 	// Push the signal out using schematyc.
 	if (auto const pSchematycObject = GetEntity()->GetSchematycObject())

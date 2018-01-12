@@ -35,11 +35,11 @@ public:
 	const string kInteractStartVerb { "interaction_interact_start" };
 	const string kInteractTickVerb { "interaction_interact_tick" };
 	const string kInteractCompleteVerb { "interaction_interact_complete" };
-	const string kInteractCancelVerb { "interaction_interact_cancel" };
 
 	const string kInteractAnimationEnterVerb { "interaction_animation_enter" };
 	const string kInteractAnimationFailVerb { "interaction_animation_fail" };
 	const string kInteractAnimationExitVerb { "interaction_animation_exit" };
+	const string kInteractAnimationEventVerb { "interaction_animation_event" };
 
 	struct SInteractStartSignal
 	{
@@ -60,12 +60,6 @@ public:
 	struct SInteractCompleteSignal
 	{
 		SInteractCompleteSignal() = default;
-	};
-
-
-	struct SInteractCancelSignal
-	{
-		SInteractCancelSignal() = default;
 	};
 
 
@@ -118,10 +112,9 @@ public:
 
 
 	// IInteractionInteract
-	virtual void OnInteractionInteractStart(IActorComponent& actor) override;
-	virtual void OnInteractionInteractTick(IActorComponent& actor) override;
-	virtual void OnInteractionInteractComplete(IActorComponent& actor) override;
-	virtual void OnInteractionInteractCancel(IActorComponent& actor) override;
+	virtual void OnInteractionInteractStart(IInteraction& pInteraction, IActorComponent& actor) override;
+	virtual void OnInteractionInteractTick(IInteraction& pInteraction, IActorComponent& actor) override;
+	virtual void OnInteractionInteractComplete(IInteraction& pInteraction, IActorComponent& actor) override;
 	// ~IInteractionInteract
 
 	// IAnimationEventListener
@@ -154,5 +147,8 @@ protected:
 	/** During the processing cycle for an interaction, this will hold the actor that initiated the interaction. It will
 	be invalid at all other times. */
 	IActorComponent* m_pInteractionActor { nullptr };
+
+	/** The interaction being run by this component. */
+	IInteraction* m_interaction { nullptr };
 };
 }

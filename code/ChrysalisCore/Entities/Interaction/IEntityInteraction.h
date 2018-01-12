@@ -36,15 +36,6 @@ struct IInteraction
 	virtual void OnInteractionComplete(IActorComponent& actor) {};
 
 
-	/**
-	Called if an interaction is cancelled early. This might, for instance, be called if the player hits ESC while
-	still holding down the interaction key / button. It's unlikely to be needed and is only provided for completeness.
-	
-	\param [in,out]	actor The actor who triggered this interaction.
-	**/
-	virtual void OnInteractionCancel(IActorComponent& actor) {};
-
-	bool IsUseable() const { return true; };
 	virtual const string GetVerb() const { return "interaction_interact"; };
 	virtual const string GetVerbUI() const { return "@" + GetVerb(); };
 
@@ -61,49 +52,15 @@ DECLARE_SHARED_POINTERS(IInteraction);
 
 
 // ***
-// *** Zoom in to an entity and switch to an examine camera.
-// ***
-
-struct IInteractionExamine
-{
-	virtual void OnInteractionExamineStart(IActorComponent& actor) = 0;
-	virtual void OnInteractionExamineComplete(IActorComponent& actor) = 0;
-	virtual void OnInteractionExamineCancel(IActorComponent& actor) = 0;
-};
-
-
-class CInteractionExamine : public IInteraction
-{
-public:
-	CInteractionExamine(IInteractionExamine* subject, bool isEnabled = true, bool isHidden = false)
-	{
-		m_subject = subject;
-		m_isEnabled = isEnabled;
-		m_isHidden = isHidden;
-	};
-
-	const string GetVerb() const override { return "interaction_examine"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionExamineStart(actor); };
-	void OnInteractionComplete(IActorComponent& actor) override { m_subject->OnInteractionExamineComplete(actor); };
-	void OnInteractionCancel(IActorComponent& actor) override { m_subject->OnInteractionExamineCancel(actor); };
-
-private:
-	IInteractionExamine* m_subject { nullptr };
-};
-DECLARE_SHARED_POINTERS(CInteractionExamine);
-
-
-// ***
 // *** Generic interactions e.g. "use", "interact". Good for when then is really only one
 // *** option for interacting with an entity.
 // ***
 
 struct IInteractionInteract
 {
-	virtual void OnInteractionInteractStart(IActorComponent& actor) = 0;
-	virtual void OnInteractionInteractTick(IActorComponent& actor) = 0;
-	virtual void OnInteractionInteractComplete(IActorComponent& actor) = 0;
-	virtual void OnInteractionInteractCancel(IActorComponent& actor) = 0;
+	virtual void OnInteractionInteractStart(IInteraction& pInteraction, IActorComponent& actor) = 0;
+	virtual void OnInteractionInteractTick(IInteraction& pInteraction, IActorComponent& actor) = 0;
+	virtual void OnInteractionInteractComplete(IInteraction& pInteraction, IActorComponent& actor) = 0;
 };
 
 
@@ -111,17 +68,16 @@ class CInteractionInteract : public IInteraction
 {
 public:
 	CInteractionInteract(IInteractionInteract* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
 
 	const string GetVerb() const override { return "interaction_interact"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionInteractStart(actor); };
-	void OnInteractionTick(IActorComponent& actor) override { m_subject->OnInteractionInteractTick(actor); };
-	void OnInteractionComplete(IActorComponent& actor) override { m_subject->OnInteractionInteractComplete(actor); };
-	void OnInteractionCancel(IActorComponent& actor) override { m_subject->OnInteractionInteractCancel(actor); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionInteractStart(*this, actor); };
+	void OnInteractionTick(IActorComponent& actor) override { m_subject->OnInteractionInteractTick(*this, actor); };
+	void OnInteractionComplete(IActorComponent& actor) override { m_subject->OnInteractionInteractComplete(*this, actor); };
 
 private:
 	IInteractionInteract* m_subject { nullptr };
@@ -130,43 +86,14 @@ DECLARE_SHARED_POINTERS(CInteractionInteract);
 
 
 // ***
-// *** Trigger a DRS operation with variable passed in from the component.
-// ***
-
-struct IInteractionDRS
-{
-	virtual void OnInteractionDRS() = 0;
-};
-
-
-class CInteractionDRS : public IInteraction
-{
-public:
-	CInteractionDRS(IInteractionDRS* subject, bool isEnabled = true, bool isHidden = false)
-	{
-		m_subject = subject;
-		m_isEnabled = isEnabled;
-		m_isHidden = isHidden;
-	};
-
-	const string GetVerb() const override { return "interaction_drs"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionDRS(); };
-
-private:
-	IInteractionDRS* m_subject { nullptr };
-};
-DECLARE_SHARED_POINTERS(CInteractionDRS);
-
-
-// ***
 // *** Switches
 // ***
 
 struct IInteractionSwitch
 {
-	virtual void OnInteractionSwitchToggle(IActorComponent& actor) = 0;
-	virtual void OnInteractionSwitchOff(IActorComponent& actor) = 0;
-	virtual void OnInteractionSwitchOn(IActorComponent& actor) = 0;
+	virtual void OnInteractionSwitchToggle(IInteraction& pInteraction, IActorComponent& actor) = 0;
+	virtual void OnInteractionSwitchOff(IInteraction& pInteraction, IActorComponent& actor) = 0;
+	virtual void OnInteractionSwitchOn(IInteraction& pInteraction, IActorComponent& actor) = 0;
 };
 
 
@@ -174,14 +101,14 @@ class CInteractionSwitchToggle : public IInteraction
 {
 public:
 	CInteractionSwitchToggle(IInteractionSwitch* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
 
 	const string GetVerb() const override { return "interaction_switch_toggle"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchToggle(actor); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchToggle(*this, actor); };
 
 private:
 	IInteractionSwitch* m_subject { nullptr };
@@ -193,14 +120,14 @@ class CInteractionSwitchOn : public IInteraction
 {
 public:
 	CInteractionSwitchOn(IInteractionSwitch* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
 
 	const string GetVerb() const override { return "interaction_switch_on"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchOn(actor); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchOn(*this, actor); };
 
 private:
 	IInteractionSwitch* m_subject { nullptr };
@@ -212,19 +139,119 @@ class CInteractionSwitchOff : public IInteraction
 {
 public:
 	CInteractionSwitchOff(IInteractionSwitch* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
 
 	const string GetVerb() const override { return "interaction_switch_off"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchOff(actor); };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionSwitchOff(*this, actor); };
 
 private:
 	IInteractionSwitch* m_subject { nullptr };
 };
 DECLARE_SHARED_POINTERS(CInteractionSwitchOff);
+
+
+// ***
+// *** Open / close.
+// ***
+
+
+struct IInteractionOpenable
+{
+	virtual void OnInteractionOpenableOpen(IActorComponent& actor) = 0;
+	virtual void OnInteractionOpenableClose(IActorComponent& actor) = 0;
+};
+
+
+class CInteractionOpenableOpen : public IInteraction
+{
+public:
+	CInteractionOpenableOpen(IInteractionOpenable* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
+	{
+		m_isEnabled = isEnabled;
+		m_isHidden = isHidden;
+	};
+
+	const string GetVerb() const override { return "interaction_openable_open"; };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionOpenableOpen(actor); };
+
+private:
+	IInteractionOpenable* m_subject { nullptr };
+};
+DECLARE_SHARED_POINTERS(CInteractionOpenableOpen);
+
+
+class CInteractionOpenableClose : public IInteraction
+{
+public:
+	CInteractionOpenableClose(IInteractionOpenable* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
+	{
+		m_isEnabled = isEnabled;
+		m_isHidden = isHidden;
+	};
+
+	const string GetVerb() const override { return "interaction_openable_close"; };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionOpenableClose(actor); };
+
+private:
+	IInteractionOpenable* m_subject { nullptr };
+};
+DECLARE_SHARED_POINTERS(CInteractionOpenableClose);
+
+
+// ***
+// *** Lock / unlock.
+// ***
+
+
+struct IInteractionLockable
+{
+	virtual void OnInteractionLockableLock(IActorComponent& actor) = 0;
+	virtual void OnInteractionLockableUnlock(IActorComponent& actor) = 0;
+};
+
+
+class CInteractionLockableLock : public IInteraction
+{
+public:
+	CInteractionLockableLock(IInteractionLockable* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
+	{
+		m_isEnabled = isEnabled;
+		m_isHidden = isHidden;
+	};
+
+	const string GetVerb() const override { return "interaction_lockable_lock"; };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionLockableLock(actor); };
+
+private:
+	IInteractionLockable* m_subject { nullptr };
+};
+DECLARE_SHARED_POINTERS(CInteractionLockableLock);
+
+
+class CInteractionLockableUnlock : public IInteraction
+{
+public:
+	CInteractionLockableUnlock(IInteractionLockable* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
+	{
+		m_isEnabled = isEnabled;
+		m_isHidden = isHidden;
+	};
+
+	const string GetVerb() const override { return "interaction_lockable_unlock"; };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionLockableUnlock(actor); };
+
+private:
+	IInteractionLockable* m_subject { nullptr };
+};
+DECLARE_SHARED_POINTERS(CInteractionLockableUnlock);
 
 
 // ***
@@ -245,8 +272,8 @@ class CInteractionItemInspect : public IInteraction
 {
 public:
 	CInteractionItemInspect(IInteractionItem* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
@@ -264,8 +291,8 @@ class CInteractionItemPickup : public IInteraction
 {
 public:
 	CInteractionItemPickup(IInteractionItem* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
@@ -283,8 +310,8 @@ class CInteractionItemDrop : public IInteraction
 {
 public:
 	CInteractionItemDrop(IInteractionItem* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
@@ -302,8 +329,8 @@ class CInteractionItemToss : public IInteraction
 {
 public:
 	CInteractionItemToss(IInteractionItem* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
@@ -318,101 +345,61 @@ DECLARE_SHARED_POINTERS(CInteractionItemToss);
 
 
 // ***
-// *** Generic open.
+// *** Zoom in to an entity and switch to an examine camera.
 // ***
 
-
-struct IInteractionOpenable
+struct IInteractionExamine
 {
-	virtual void OnInteractionOpenableOpen(IActorComponent& actor) = 0;
-	virtual void OnInteractionOpenableClose(IActorComponent& actor) = 0;
+	virtual void OnInteractionExamineStart(IActorComponent& actor) = 0;
+	virtual void OnInteractionExamineComplete(IActorComponent& actor) = 0;
 };
 
 
-class CInteractionOpenableOpen : public IInteraction
+class CInteractionExamine : public IInteraction
 {
 public:
-	CInteractionOpenableOpen(IInteractionOpenable* subject, bool isEnabled = true, bool isHidden = false)
+	CInteractionExamine(IInteractionExamine* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
 
-	const string GetVerb() const override { return "interaction_openable_open"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionOpenableOpen(actor); };
+	const string GetVerb() const override { return "interaction_examine"; };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionExamineStart(actor); };
+	void OnInteractionComplete(IActorComponent& actor) override { m_subject->OnInteractionExamineComplete(actor); };
 
 private:
-	IInteractionOpenable* m_subject { nullptr };
+	IInteractionExamine* m_subject { nullptr };
 };
-DECLARE_SHARED_POINTERS(CInteractionOpenableOpen);
-
-
-class CInteractionOpenableClose : public IInteraction
-{
-public:
-	CInteractionOpenableClose(IInteractionOpenable* subject, bool isEnabled = true, bool isHidden = false)
-	{
-		m_subject = subject;
-		m_isEnabled = isEnabled;
-		m_isHidden = isHidden;
-	};
-
-	const string GetVerb() const override { return "interaction_openable_close"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionOpenableClose(actor); };
-
-private:
-	IInteractionOpenable* m_subject { nullptr };
-};
-DECLARE_SHARED_POINTERS(CInteractionOpenableClose);
+DECLARE_SHARED_POINTERS(CInteractionExamine);
 
 
 // ***
-// *** Lockable.
+// *** Trigger a DRS operation with variable passed in from the component.
 // ***
 
-
-struct IInteractionLockable
+struct IInteractionDRS
 {
-	virtual void OnInteractionLockableLock(IActorComponent& actor) = 0;
-	virtual void OnInteractionLockableUnlock(IActorComponent& actor) = 0;
+	virtual void OnInteractionDRS() = 0;
 };
 
 
-class CInteractionLockableLock : public IInteraction
+class CInteractionDRS : public IInteraction
 {
 public:
-	CInteractionLockableLock(IInteractionLockable* subject, bool isEnabled = true, bool isHidden = false)
+	CInteractionDRS(IInteractionDRS* subject, bool isEnabled = true, bool isHidden = false)
+		: m_subject(subject)
 	{
-		m_subject = subject;
 		m_isEnabled = isEnabled;
 		m_isHidden = isHidden;
 	};
 
-	const string GetVerb() const override { return "interaction_lockable_lock"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionLockableLock(actor); };
+	const string GetVerb() const override { return "interaction_drs"; };
+	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionDRS(); };
 
 private:
-	IInteractionLockable* m_subject { nullptr };
+	IInteractionDRS* m_subject { nullptr };
 };
-DECLARE_SHARED_POINTERS(CInteractionLockableLock);
-
-
-class CInteractionLockableUnlock : public IInteraction
-{
-public:
-	CInteractionLockableUnlock(IInteractionLockable* subject, bool isEnabled = true, bool isHidden = false)
-	{
-		m_subject = subject;
-		m_isEnabled = isEnabled;
-		m_isHidden = isHidden;
-	};
-
-	const string GetVerb() const override { return "interaction_lockable_unlock"; };
-	void OnInteractionStart(IActorComponent& actor) override { m_subject->OnInteractionLockableUnlock(actor); };
-
-private:
-	IInteractionLockable* m_subject { nullptr };
-};
-DECLARE_SHARED_POINTERS(CInteractionLockableUnlock);
+DECLARE_SHARED_POINTERS(CInteractionDRS);
 }

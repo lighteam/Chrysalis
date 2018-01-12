@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 
 #include "SwitchComponent.h"
+#include "Actor/ActorComponent.h"
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 
 
@@ -48,6 +49,9 @@ void CSwitchComponent::ReflectType(Schematyc::CTypeDesc<CSwitchComponent>& desc)
 	desc.AddMember(&CSwitchComponent::m_isSwitchedOn, 'ison', "SwitchedOn", "Switched On", "Is this switch currently switch on.", true);
 	desc.AddMember(&CSwitchComponent::m_isSingleUseOnly, 'issi', "IsSingleUseOnly", "Single Use Only", "Is this switch only able to be used once.", false);
 	desc.AddMember(&CSwitchComponent::m_queueSignal, 'alts', "SwitchVerb", "Switch Verb (Override)", "Send an alternative queue signal to DRS if the string is not empty. ('interaction_switch').", "");
+
+	// Mark the entity interaction component as a hard requirement.
+	desc.AddComponentInteraction(SEntityComponentRequirements::EType::HardDependency, CEntityInteractionComponent::IID());
 }
 
 
@@ -77,24 +81,33 @@ void CSwitchComponent::OnResetState()
 }
 
 
-void CSwitchComponent::OnInteractionSwitchToggle(IActorComponent& actor)
+void CSwitchComponent::OnInteractionSwitchToggle(IInteraction& pInteraction, IActorComponent& actor)
 {
+	// Inform the actor we are taking control of an interaction.
+	actor.InteractionStart(&pInteraction);
+
+	// TODO: This should really start an animation, etc. Is it best to derive it from the base interaction?
+
+
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("SwitchToggle fired.");
 		if (m_isSwitchedOn)
-			OnInteractionSwitchOff(actor);
+			OnInteractionSwitchOff(pInteraction, actor);
 		else
-			OnInteractionSwitchOn(actor);
+			OnInteractionSwitchOn(pInteraction, actor);
 
 		// Push the signal out using schematyc.
 		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
 			pSchematycObject->ProcessSignal(SSwitchToggleSignal(), GetGUID());
 	}
+
+	// Inform the actor we are finished with an interaction.
+	actor.InteractionEnd(&pInteraction);
 }
 
 
-void CSwitchComponent::OnInteractionSwitchOn(IActorComponent& actor)
+void CSwitchComponent::OnInteractionSwitchOn(IInteraction& pInteraction, IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
@@ -113,7 +126,7 @@ void CSwitchComponent::OnInteractionSwitchOn(IActorComponent& actor)
 }
 
 
-void CSwitchComponent::OnInteractionSwitchOff(IActorComponent& actor)
+void CSwitchComponent::OnInteractionSwitchOff(IInteraction& pInteraction, IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{

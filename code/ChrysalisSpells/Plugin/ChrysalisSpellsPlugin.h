@@ -6,37 +6,31 @@
 #include <CryNetwork/INetwork.h>
 
 
-namespace Chrysalis
+namespace ChrysalisSpells
 {
 class CObjectIdMasterFactory;
 
 
-/**
-The entry-point of the application An instance of CChrysalisCorePlugin is automatically created when the library is
-loaded We then construct the local player entity and CPlayerComponent instance when OnClientConnectionReceived is
-first called.
-**/
-
-class CChrysalisCorePlugin
+class CChrysalisSpellsPlugin
 	: public ICryPlugin
 	, public ISystemEventListener
 	, public INetworkedClientListener
 {
 public:
 	CRYINTERFACE_SIMPLE(ICryPlugin)
-	CRYGENERATE_SINGLETONCLASS_GUID(CChrysalisCorePlugin, "ChrysalisCore", "{CA15546E-9C8A-4554-9EE6-426DEEF423EA}"_cry_guid);
-	static CryGUID GetSchematycPackageGUID() { return "{A403DB90-2A16-434A-8603-9B35098F6364}"_cry_guid; }
+	CRYGENERATE_SINGLETONCLASS_GUID(CChrysalisSpellsPlugin, "ChrysalisSpells", "{8B63CD64-F07C-45A7-A5D1-8E35E4BE7090}"_cry_guid);
+	static CryGUID GetSchematycPackageGUID() { return "{2F667FC9-E651-4723-BB18-2843898D5971}"_cry_guid; }
 
 	void RegisterComponents(Schematyc::IEnvRegistrar& registrar);
 
 	PLUGIN_FLOWNODE_REGISTER
 	PLUGIN_FLOWNODE_UNREGISTER
 
-	virtual ~CChrysalisCorePlugin();
+	virtual ~CChrysalisSpellsPlugin();
 
 	// ICryPlugin
-	virtual const char* GetName() const override { return "ChrysalisCore"; }
-	virtual const char* GetCategory() const override { return "Game"; }
+	virtual const char* GetName() const override { return "ChrysalisSpells"; }
+	virtual const char* GetCategory() const override { return "Plugin"; }
 	virtual bool Initialize(SSystemGlobalEnvironment& env, const SSystemInitParams& initParams) override;
 	virtual void OnPluginUpdate(EPluginUpdateType updateType) override {}
 	// ~ICryPlugin
@@ -66,17 +60,6 @@ public:
 	virtual bool OnClientTimingOut(int channelId, EDisconnectionCause cause, const char* description) override { return true; }
 	// ~INetworkedClientListener
 
-	static CChrysalisCorePlugin* Get();
-
-	CObjectIdMasterFactory* GetObjectId() { return m_pObjectIdMasterFactory; }
-
-protected:
-	// Map containing player components, key is the channel id received in OnClientConnectionReceived
-	std::unordered_map<int, EntityId> m_players;
-
-
-private:
-	/** The object identifier master factory. */
-	CObjectIdMasterFactory* m_pObjectIdMasterFactory { nullptr };
+	static CChrysalisSpellsPlugin* Get();
 };
 }

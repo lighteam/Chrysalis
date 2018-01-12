@@ -41,8 +41,6 @@
 #include "Components/Openable/ContainerComponent.h"
 #include "Components/Switchable/SwitchComponent.h"
 #include "Entities/Compass/CompassComponent.h"
-#include "Entities/Doors/AnimatedDoorComponent.h"
-#include "Entities/Flashlight/FlashlightComponent.h"
 #include "Entities/Interaction/DRSInteractionEntity.h"
 #include "Entities/SecurityPad/SecurityPadComponent.h"
 #include "Components/Player/Input/PlayerInputComponent.h"
@@ -196,14 +194,6 @@ void CChrysalisCorePlugin::RegisterComponents(Schematyc::IEnvRegistrar& registra
 		{
 			Schematyc::CEnvRegistrationScope componentScope = scope.Register(SCHEMATYC_MAKE_ENV_COMPONENT(Chrysalis::CCompassComponent));
 			Chrysalis::CCompassComponent::Register(componentScope);
-		}
-		{
-			Schematyc::CEnvRegistrationScope componentScope = scope.Register(SCHEMATYC_MAKE_ENV_COMPONENT(Chrysalis::CAnimatedDoorComponent));
-			Chrysalis::CAnimatedDoorComponent::Register(componentScope);
-		}
-		{
-			Schematyc::CEnvRegistrationScope componentScope = scope.Register(SCHEMATYC_MAKE_ENV_COMPONENT(Chrysalis::CFlashlightComponent));
-			Chrysalis::CFlashlightComponent::Register(componentScope);
 		}
 		{
 			Schematyc::CEnvRegistrationScope componentScope = scope.Register(SCHEMATYC_MAKE_ENV_COMPONENT(Chrysalis::CDRSInteractionEntity));

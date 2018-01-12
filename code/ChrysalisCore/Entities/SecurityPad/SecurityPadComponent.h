@@ -37,7 +37,6 @@ public:
 	// IInteractionExamine
 	void OnInteractionExamineStart(IActorComponent& actor) override;;
 	void OnInteractionExamineComplete(IActorComponent& actor) override;;
-	void OnInteractionExamineCancel(IActorComponent& actor) override;;
 	// IInteractionExamine
 
 private:

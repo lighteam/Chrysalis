@@ -292,13 +292,13 @@ public:
 	has completed. Generally, you will want whatever process is kicked off by the 'OnActionInteractionStart' function to
 	make a call to this at the start of it's specific interaction.
 	**/
-	virtual void InteractionStart() = 0;
+	virtual void InteractionStart(IInteraction* pInteraction) = 0;
 
 	/** Received at intervals during an on-going interaction. */
-	virtual void InteractionTick() = 0;
+	virtual void InteractionTick(IInteraction* pInteraction) = 0;
 
 	/** Call this to remove the actor from "interaction mode". This will open the actor up to accepting interactions again. */
-	virtual void InteractionEnd() = 0;
+	virtual void InteractionEnd(IInteraction* pInteraction) = 0;
 
 	/** Queue an action onto the animation queue. */
 	virtual void QueueAction(TAction<SAnimationContext>& pAction) = 0;
@@ -613,13 +613,13 @@ public:
 	has completed. Generally, you will want whatever process is kicked off by the 'OnActionInteractionStart' function to
 	make a call to this at the start of it's specific interaction.
 	**/
-	void InteractionStart() override;
+	void InteractionStart(IInteraction* pInteraction) override;
 
 	/** Received at intervals during an on-going interaction. */
-	void InteractionTick() override;
+	void InteractionTick(IInteraction* pInteraction) override;
 
 	/** Call this to remove the actor from "interaction mode". This will open the actor up to accepting interactions again. */
-	void InteractionEnd() override;
+	void InteractionEnd(IInteraction* pInteraction) override;
 
 private:
 	/** If we are interacting with an entity, it is this entity. */
@@ -628,6 +628,9 @@ private:
 	/** If we're interacting with something, this is the actual interaction. */
 	IInteraction* m_pInteraction { nullptr };
 
+	/** True when the actor is busy interaction with something, and shouldn't be allowed to start a new interaction until
+	the first is finished. */
+	bool isBusyInInteraction { false };
 
 	// ***
 	// *** Allow control of the actor's animations / fragments / etc.

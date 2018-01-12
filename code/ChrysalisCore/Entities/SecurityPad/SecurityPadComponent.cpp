@@ -20,6 +20,9 @@ void CSecurityPadComponent::ReflectType(Schematyc::CTypeDesc<CSecurityPadCompone
 	desc.SetDescription("Interactive security pad for controlling access to locked areas.");
 	desc.SetIcon("icons:ObjectTypes/light.ico");
 	desc.SetComponentFlags({ IEntityComponent::EFlags::None });
+
+	// Mark the entity interaction component as a hard requirement.
+	desc.AddComponentInteraction(SEntityComponentRequirements::EType::HardDependency, CEntityInteractionComponent::IID());
 }
 
 
@@ -65,12 +68,5 @@ void CSecurityPadComponent::OnInteractionExamineComplete(IActorComponent& actor)
 		auto pCameraManager = pPlayer->GetCameraManager();
 		pCameraManager->SetLastCameraMode();
 	}
-}
-
-
-void CSecurityPadComponent::OnInteractionExamineCancel(IActorComponent& actor)
-{
-	// Same result as completing.
-	OnInteractionExamineComplete(actor);
 }
 }

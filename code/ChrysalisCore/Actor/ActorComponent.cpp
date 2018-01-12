@@ -725,7 +725,8 @@ void CActorComponent::OnActionInspectEnd()
 void CActorComponent::OnActionInteractionStart()
 {
 	// You shouldn't be allowed to start another interaction before the last one is completed.
-	if (m_pInteraction != nullptr)
+	//if (m_pInteraction != nullptr)
+	if (isBusyInInteraction)
 		return;
 
 	if (m_pAwareness)
@@ -768,10 +769,6 @@ void CActorComponent::OnActionInteractionStart()
 					m_pInteraction = pInteractor->GetInteraction(verb)._Get();
 					CryLogAlways("Player started interacting with: %s", m_pInteraction->GetVerbUI());
 					m_pInteraction->OnInteractionStart(*this);
-
-					// HACK: Doesn't belong here, test to see if we can queue an interaction action.
-					//auto action = new CActorAnimationActionInteraction();
-					//QueueAction(*action);
 				}
 			}
 		}
@@ -807,22 +804,21 @@ void CActorComponent::OnActionInteractionEnd()
 }
 
 
-void CActorComponent::InteractionStart()
+void CActorComponent::InteractionStart(IInteraction* pInteraction)
 {
-	// You shouldn't be allowed to start another interaction before the last one is completed.
-	if (m_pInteraction != nullptr)
-		return;
+	isBusyInInteraction = true;
 }
 
 
-void CActorComponent::InteractionTick()
+void CActorComponent::InteractionTick(IInteraction* pInteraction)
 {
 }
 
 
-void CActorComponent::InteractionEnd()
+void CActorComponent::InteractionEnd(IInteraction* pInteraction)
 {
 	// No longer valid.
+	isBusyInInteraction = false;
 	m_pInteraction = nullptr;
 	m_interactionEntityId = INVALID_ENTITYID; // HACK: FIX: This seems weak, look for a better way to handle keeping an entity Id for later.
 }

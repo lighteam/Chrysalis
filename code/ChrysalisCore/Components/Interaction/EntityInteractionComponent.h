@@ -21,8 +21,6 @@ protected:
 
 	// IEntityComponent
 	void Initialize() override;
-	void ProcessEvent(SEntityEvent& event) override;
-	uint64 GetEventMask() const { return BIT64(ENTITY_EVENT_UPDATE); }
 	// ~IEntityComponent
 
 public:
@@ -37,9 +35,6 @@ public:
 		return id;
 	}
 
-	/** Updates this instance. */
-	void Update();
-
 	std::vector<string> GetVerbs(bool includeHidden = false);
 
 	void AddInteraction(IInteractionPtr interaction);
@@ -51,7 +46,6 @@ public:
 	void OnInteractionStart(IActorComponent& actor);
 	void OnInteractionTick(IActorComponent& actor);
 	void OnInteractionComplete(IActorComponent& actor);
-	void OnInteractionCancel(IActorComponent& actor);
 
 private:
 	std::vector<IInteractionPtr> m_Interactions;
