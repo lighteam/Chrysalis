@@ -67,7 +67,7 @@ void CItemInteractionComponent::OnInteractionItemInspect(IActorComponent& actor)
 		return;
 	}
 
-	gEnv->pLog->LogAlways("OnInteractionItemInspect fired.");
+	CryLogAlways("OnInteractionItemInspect fired.");
 	m_inspectionState = InspectionState::eInspecting;
 
 	if (auto pActorComponent = CPlayerComponent::GetLocalActor())
@@ -97,7 +97,7 @@ void CItemInteractionComponent::OnInteractionItemPickup(IActorComponent& actor)
 		return;
 	}
 
-	gEnv->pLog->LogAlways("OnInteractionItemPickup fired.");
+	CryLogAlways("OnInteractionItemPickup fired.");
 	m_inspectionState = InspectionState::ePickingUp;
 
 	if (auto pActorComponent = CPlayerComponent::GetLocalActor())
@@ -118,7 +118,7 @@ void CItemInteractionComponent::OnInteractionItemPickup(IActorComponent& actor)
 
 void CItemInteractionComponent::OnInteractionItemDrop(IActorComponent& actor)
 {
-	gEnv->pLog->LogAlways("OnInteractionItemDrop fired.");
+	CryLogAlways("OnInteractionItemDrop fired.");
 	m_inspectionState = InspectionState::eDroping;
 
 	if (auto pActorComponent = CPlayerComponent::GetLocalActor())
@@ -143,7 +143,7 @@ void CItemInteractionComponent::OnInteractionItemDrop(IActorComponent& actor)
 
 void CItemInteractionComponent::OnInteractionItemToss(IActorComponent& actor)
 {
-	gEnv->pLog->LogAlways("OnInteractionItemToss fired.");
+	CryLogAlways("OnInteractionItemToss fired.");
 	m_inspectionState = InspectionState::eTossing;
 
 	if (auto pActorComponent = CPlayerComponent::GetLocalActor())

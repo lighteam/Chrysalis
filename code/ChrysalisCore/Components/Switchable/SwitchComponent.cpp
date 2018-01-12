@@ -91,7 +91,7 @@ void CSwitchComponent::OnInteractionSwitchToggle(IInteraction& pInteraction, IAc
 
 	if (m_isEnabled)
 	{
-		gEnv->pLog->LogAlways("SwitchToggle fired.");
+		CryLogAlways("SwitchToggle fired.");
 		if (m_isSwitchedOn)
 			OnInteractionSwitchOff(pInteraction, actor);
 		else
@@ -111,7 +111,7 @@ void CSwitchComponent::OnInteractionSwitchOn(IInteraction& pInteraction, IActorC
 {
 	if (m_isEnabled)
 	{
-		gEnv->pLog->LogAlways("SwitchOn fired.");
+		CryLogAlways("SwitchOn fired.");
 		m_isSwitchedOn = true;
 		InformAllLinkedEntities(kSwitchOnVerb, true);
 
@@ -130,7 +130,7 @@ void CSwitchComponent::OnInteractionSwitchOff(IInteraction& pInteraction, IActor
 {
 	if (m_isEnabled)
 	{
-		gEnv->pLog->LogAlways("SwitchOff fired.");
+		CryLogAlways("SwitchOff fired.");
 		m_isSwitchedOn = false;
 		InformAllLinkedEntities(kSwitchOffVerb, true);
 

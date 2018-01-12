@@ -142,7 +142,7 @@ void CActorComponent::Initialize()
 	{
 		// Tells this instance to trigger areas and that it's the local player.
 		pEntity->AddFlags(ENTITY_FLAG_TRIGGER_AREAS | ENTITY_FLAG_LOCAL_PLAYER);
-		gEnv->pLog->LogAlways("CActorComponent::HandleEvent(): Entity \"%s\" became the local character!", pEntity->GetName());
+		CryLogAlways("CActorComponent::HandleEvent(): Entity \"%s\" became the local character!", pEntity->GetName());
 	}
 
 	// Reset the entity.

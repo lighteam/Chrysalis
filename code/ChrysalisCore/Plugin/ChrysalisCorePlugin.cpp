@@ -1,32 +1,24 @@
 #include "StdAfx.h"
 
 #include "ChrysalisCorePlugin.h"
-#include <CrySystem/ISystem.h>
+#include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 #include <CryExtension/ICryPluginManager.h>
 #include <CrySchematyc/Env/IEnvRegistry.h>
 #include <CrySchematyc/Env/EnvPackage.h>
 #include <CrySchematyc/Utils/SharedString.h>
+#include <CrySystem/ISystem.h>
 #include <IGameObjectSystem.h>
 #include <IGameObject.h>
-#include "Console/CVars.h"
-#include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
-#include "DynamicResponseSystem/ConditionDistanceToEntity.h"
-#include "DynamicResponseSystem/ActionClose.h"
-#include "DynamicResponseSystem/ActionLock.h"
-#include "DynamicResponseSystem/ActionOpen.h"
-#include "DynamicResponseSystem/ActionPlayAnimation.h"
-#include "DynamicResponseSystem/ActionSwitch.h"
-#include "DynamicResponseSystem/ActionUnlock.h"
-#include "ObjectID/ObjectIdMasterFactory.h"
 #include "Actor/Character/CharacterAttributesComponent.h"
 #include "Actor/ActorComponent.h"
 #include "Actor/ActorControllerComponent.h"
-#include <Actor/Character/CharacterComponent.h>
+#include "Actor/Character/CharacterComponent.h"
 #include "Actor/Mount/Mount.h"
 #include "Actor/Pet/Pet.h"
 #include "Components/Items/ItemComponent.h"
 #include "Components/Animation/ControlledAnimationComponent.h"
 #include "Components/Animation/SimpleAnimationComponent.h"
+#include "Components/Compass/CompassComponent.h"
 #include "Components/Equipment/EquipmentComponent.h"
 #include "Components/Interaction/DRSInteractionComponent.h"
 #include "Components/Interaction/EntityAwarenessComponent.h"
@@ -40,9 +32,6 @@
 #include "Components/Player/PlayerComponent.h"
 #include "Components/Openable/ContainerComponent.h"
 #include "Components/Switchable/SwitchComponent.h"
-#include "Entities/Compass/CompassComponent.h"
-#include "Entities/Interaction/DRSInteractionEntity.h"
-#include "Entities/SecurityPad/SecurityPadComponent.h"
 #include "Components/Player/Input/PlayerInputComponent.h"
 #include "Components/Snaplocks/SnaplockComponent.h"
 #include "Components/Player/Camera/CameraManagerComponent.h"
@@ -51,6 +40,17 @@
 #include "Components/Player/Camera/FirstPersonCameraComponent.h"
 #include "Components/TimePiece/TimePieceComponent.h"
 #include "Components/Gauge/GaugeComponent.h"
+#include "Console/CVars.h"
+#include "DynamicResponseSystem/ConditionDistanceToEntity.h"
+#include "DynamicResponseSystem/ActionClose.h"
+#include "DynamicResponseSystem/ActionLock.h"
+#include "DynamicResponseSystem/ActionOpen.h"
+#include "DynamicResponseSystem/ActionPlayAnimation.h"
+#include "DynamicResponseSystem/ActionSwitch.h"
+#include "DynamicResponseSystem/ActionUnlock.h"
+#include "Entities/Interaction/DRSInteractionEntity.h"
+#include "Entities/SecurityPad/SecurityPadComponent.h"
+#include "ObjectID/ObjectIdMasterFactory.h"
 #include "Schematyc/CoreEnv.h"
 
 

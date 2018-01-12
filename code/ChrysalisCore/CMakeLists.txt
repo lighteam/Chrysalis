@@ -146,6 +146,12 @@ add_sources("Animation_uber.cpp"
 		"Components/Animation/ControlledAnimationComponent.h"
 		"Components/Animation/SimpleAnimationComponent.h"
 )
+add_sources("Compass_uber.cpp"
+    PROJECTS Chrysalis
+    SOURCE_GROUP "Components\\\\Compass"
+		"Components/Compass/CompassComponent.cpp"
+		"Components/Compass/CompassComponent.h"
+)
 add_sources("Equipment_uber.cpp"
     PROJECTS Chrysalis
     SOURCE_GROUP "Components\\\\Equipment"
@@ -278,12 +284,6 @@ add_sources("Entities_uber.cpp"
 		"Entities/EntityEffects.cpp"
 		"Entities/EntityEffects.h"
 		"Entities/EntityScriptCalls.h"
-)
-add_sources("Compass_uber.cpp"
-    PROJECTS Chrysalis
-    SOURCE_GROUP "Entities\\\\Compass"
-		"Entities/Compass/CompassComponent.cpp"
-		"Entities/Compass/CompassComponent.h"
 )
 add_sources("Interaction_uber.cpp"
     PROJECTS Chrysalis

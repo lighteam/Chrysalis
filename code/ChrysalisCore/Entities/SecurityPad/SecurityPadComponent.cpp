@@ -47,7 +47,7 @@ void CSecurityPadComponent::OnResetState()
 
 void CSecurityPadComponent::OnInteractionExamineStart(IActorComponent& actor)
 {
-	gEnv->pLog->LogAlways("OnInteractionExamineStart fired.");
+	CryLogAlways("OnInteractionExamineStart fired.");
 
 	// Switch to the examine camera.
 	if (auto pPlayer = CPlayerComponent::GetLocalPlayer())
@@ -60,7 +60,7 @@ void CSecurityPadComponent::OnInteractionExamineStart(IActorComponent& actor)
 
 void CSecurityPadComponent::OnInteractionExamineComplete(IActorComponent& actor)
 {
-	gEnv->pLog->LogAlways("OnInteractionExamineComplete fired.");
+	CryLogAlways("OnInteractionExamineComplete fired.");
 
 	// Switch back to the previous camera.
 	if (auto pPlayer = CPlayerComponent::GetLocalPlayer())

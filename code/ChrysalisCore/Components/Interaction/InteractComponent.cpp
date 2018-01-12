@@ -72,7 +72,6 @@ void CInteractComponent::Register(Schematyc::CEnvRegistrationScope& componentSco
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractStartSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractTickSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractCompleteSignal));
-
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationEnterSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationFailSignal));
 	componentScope.Register(SCHEMATYC_MAKE_ENV_SIGNAL(CInteractComponent::SInteractAnimationExitSignal));
@@ -116,12 +115,31 @@ void CInteractComponent::OnResetState()
 }
 
 
+void CInteractComponent::ProcessSchematycSignalStart()
+{
+	GetEntity()->GetSchematycObject()->ProcessSignal(SInteractStartSignal(), GetGUID());
+}
+
+
+void CInteractComponent::ProcessSchematycSignalTick(float deltaPitch, float deltaYaw)
+{
+	SInteractTickSignal interactTickSignal;
+	interactTickSignal.m_deltaPitch = deltaPitch;
+	interactTickSignal.m_deltaYaw = deltaYaw;
+	GetEntity()->GetSchematycObject()->ProcessSignal(interactTickSignal, GetGUID());
+}
+
+
+void CInteractComponent::ProcessSignalComplete()
+{
+	GetEntity()->GetSchematycObject()->ProcessSignal(SInteractCompleteSignal(), GetGUID());
+}
+
+
 void CInteractComponent::OnInteractionInteractStart(IInteraction& pInteraction, IActorComponent& actor)
 {
 	if (m_isEnabled)
 	{
-		gEnv->pLog->LogAlways("OnInteractionInteractStart fired.");
-
 		m_pInteractionActor = &actor;
 		m_interaction = &pInteraction;
 
@@ -138,8 +156,7 @@ void CInteractComponent::OnInteractionInteractStart(IInteraction& pInteraction, 
 		InformAllLinkedEntities(kInteractStartVerb, true);
 
 		// Push the signal out using schematyc.
-		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
-			pSchematycObject->ProcessSignal(SInteractStartSignal(), GetGUID());
+		ProcessSchematycSignalStart();
 
 		// Disable after a single use.
 		if (m_isSingleUseOnly)
@@ -155,18 +172,9 @@ void CInteractComponent::OnInteractionInteractTick(IInteraction& pInteraction, I
 		// Push the signal out using DRS.
 		InformAllLinkedEntities(kInteractTickVerb, true);
 
-		SInteractTickSignal interactTickSignal;
-
-		// Pass along the delta movement for input devices. This helps enable interactive contol of entities.
+		// Pass along the delta movement for input devices. This helps enable interactive control of entities.
 		if (auto pPlayerInput = CPlayerComponent::GetLocalPlayer()->GetPlayerInput())
-		{
-			interactTickSignal.m_deltaPitch = pPlayerInput->GetPitchDelta();
-			interactTickSignal.m_deltaYaw = pPlayerInput->GetYawDelta();
-		}
-
-		// Push the signal out using schematyc.
-		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
-			pSchematycObject->ProcessSignal(interactTickSignal, GetGUID());
+			ProcessSchematycSignalTick(pPlayerInput->GetPitchDelta(), pPlayerInput->GetYawDelta());
 	}
 }
 
@@ -175,14 +183,11 @@ void CInteractComponent::OnInteractionInteractComplete(IInteraction& pInteractio
 {
 	if (m_isEnabled)
 	{
-		gEnv->pLog->LogAlways("OnInteractionInteractComplete fired.");
-
 		// Push the signal out using DRS.
 		InformAllLinkedEntities(kInteractCompleteVerb, true);
 
 		// Push the signal out using schematyc.
-		if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
-			pSchematycObject->ProcessSignal(SInteractCompleteSignal(), GetGUID());
+		ProcessSignalComplete();
 	}
 }
 
@@ -238,7 +243,7 @@ void CInteractComponent::OnActionAnimationEvent(ICharacterInstance * pCharacter,
 
 	// Push the signal out using DRS.
 	InformAllLinkedEntities(kInteractAnimationEventVerb, true);
-	
+
 	// Push the signal out using schematyc.
 	if (auto const pSchematycObject = GetEntity()->GetSchematycObject())
 		pSchematycObject->ProcessSignal(SInteractAnimationEventSignal(Schematyc::CSharedString(event.m_EventName),

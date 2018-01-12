@@ -50,7 +50,7 @@ public:
 	struct SInteractTickSignal
 	{
 		SInteractTickSignal() = default;
-		SInteractTickSignal(float deltaPitch, float deltaYaw) : m_deltaPitch (deltaPitch), m_deltaYaw(deltaYaw) {}
+		//SInteractTickSignal(float deltaPitch, float deltaYaw) : m_deltaPitch(deltaPitch), m_deltaYaw(deltaYaw) {}
 
 		float m_deltaPitch { 0.0f };
 		float m_deltaYaw { 0.0f };
@@ -91,7 +91,7 @@ public:
 			Schematyc::CSharedString bonePathName,
 			Vec3 boneDirection,
 			Vec3 boneOffset)
-			: m_eventName(eventName), 
+			: m_eventName(eventName),
 			m_eventNameLowercaseCRC32(eventNameLowercaseCRC32),
 			m_customParameter(customParameter),
 			m_time(time), m_endTime(endTime),
@@ -125,6 +125,27 @@ public:
 	// ~IAnimationEventListener
 
 protected:
+	/** Sends the Schematyc start signal. */
+	virtual void ProcessSchematycSignalStart();
+
+	/**
+	Sends the Schematyc tick signal.
+	
+	\param	deltaPitch The delta pitch.
+	\param	deltaYaw   The delta yaw.
+	**/
+	virtual void ProcessSchematycSignalTick(float deltaPitch, float deltaYaw);
+	
+	/** Sends the Schematyc complete signal. */
+	virtual void ProcessSignalComplete();
+
+
+	/**
+	Raises a DRS event and sends it to all the entities linked to this one.
+	
+	\param	verb		   The DRS verb.
+	\param	isInteractedOn True if this instance is interacted on.
+	**/
 	void InformAllLinkedEntities(string verb, bool isInteractedOn);
 
 	virtual void OnResetState();
