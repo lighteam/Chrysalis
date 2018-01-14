@@ -7,29 +7,6 @@
 
 namespace Chrysalis
 {
-static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractStartSignal>& desc)
-{
-	desc.SetGUID("{D7834D96-13FB-41C4-90D1-F3D977CA0AC7}"_cry_guid);
-	desc.SetLabel("Interact Start");
-}
-
-
-static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractTickSignal>& desc)
-{
-	desc.SetGUID("{C11053C3-0CB4-4316-A643-F53BECBA07B5}"_cry_guid);
-	desc.SetLabel("Interact Tick");
-	desc.AddMember(&CInteractComponent::SInteractTickSignal::m_deltaPitch, 'dpit', "DeltaPitch", "Delta Pitch", "Player input requested change in pitch.", 0.0f);
-	desc.AddMember(&CInteractComponent::SInteractTickSignal::m_deltaYaw, 'dyaw', "DeltaYaw", "Delta Yaw", "Player input requested change in yaw.", 0.0f);
-}
-
-
-static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractCompleteSignal>& desc)
-{
-	desc.SetGUID("{6E153DFF-B21B-4E92-8D50-976B17802556}"_cry_guid);
-	desc.SetLabel("Interact Complete");
-}
-
-
 static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractAnimationEnterSignal>& desc)
 {
 	desc.SetGUID("{9F8551C1-3DC5-42A3-B0D4-8473D1445DDC}"_cry_guid);
@@ -94,6 +71,7 @@ void CInteractComponent::ReflectType(Schematyc::CTypeDesc<CInteractComponent>& d
 	desc.AddMember(&CInteractComponent::m_isEnabled, 'isen', "IsEnabled", "IsEnabled", "Is this interaction currently enabled.", true);
 	desc.AddMember(&CInteractComponent::m_isSingleUseOnly, 'issi', "IsSingleUseOnly", "Single Use Only", "Is this Interact only able to be used once.", false);
 	desc.AddMember(&CInteractComponent::m_queueSignal, 'alts', "InteractVerb", "Interact Verb (Override)", "Send an alternative queue signal to DRS if the string is not empty. ('interaction_Interact').", "");
+	//desc.AddMember(&CInteractComponent::m_tags, 'tags', "Tags", "Mannequin Tags", "Set these tags when playing the animation.", std::vector<Schematyc::CSharedString>());
 }
 
 
@@ -112,27 +90,6 @@ void CInteractComponent::Initialize()
 void CInteractComponent::OnResetState()
 {
 	m_interactPtr->SetEnabled(m_isEnabled);
-}
-
-
-void CInteractComponent::ProcessSchematycSignalStart()
-{
-	GetEntity()->GetSchematycObject()->ProcessSignal(SInteractStartSignal(), GetGUID());
-}
-
-
-void CInteractComponent::ProcessSchematycSignalTick(float deltaPitch, float deltaYaw)
-{
-	SInteractTickSignal interactTickSignal;
-	interactTickSignal.m_deltaPitch = deltaPitch;
-	interactTickSignal.m_deltaYaw = deltaYaw;
-	GetEntity()->GetSchematycObject()->ProcessSignal(interactTickSignal, GetGUID());
-}
-
-
-void CInteractComponent::ProcessSignalComplete()
-{
-	GetEntity()->GetSchematycObject()->ProcessSignal(SInteractCompleteSignal(), GetGUID());
 }
 
 

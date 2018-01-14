@@ -16,7 +16,7 @@ protected:
 	static void Register(Schematyc::CEnvRegistrationScope& componentScope);
 
 	// IEntityComponent
-	virtual void Initialize() final;
+	virtual void Initialize() override;
 	// ~IEntityComponent
 
 public:
@@ -41,46 +41,56 @@ public:
 	const string kInteractAnimationExitVerb { "interaction_animation_exit" };
 	const string kInteractAnimationEventVerb { "interaction_animation_event" };
 
+	/** A signal that indicates the user has pressed down the interact key. */
 	struct SInteractStartSignal
 	{
 		SInteractStartSignal() = default;
 	};
 
 
+	/** A signal that indicates the user is holding down the interact key. */
 	struct SInteractTickSignal
 	{
-		SInteractTickSignal() = default;
-		//SInteractTickSignal(float deltaPitch, float deltaYaw) : m_deltaPitch(deltaPitch), m_deltaYaw(deltaYaw) {}
+		SInteractTickSignal() {};
+		SInteractTickSignal(float deltaPitch, float deltaYaw) : m_deltaPitch(deltaPitch), m_deltaYaw(deltaYaw) {};
 
 		float m_deltaPitch { 0.0f };
 		float m_deltaYaw { 0.0f };
 	};
 
 
+	/**
+	A signal that indicates the user has released the interact key. NOTE: The actual interaction may still be ongoing
+	e.g. an animation might be playing.
+	**/
 	struct SInteractCompleteSignal
 	{
 		SInteractCompleteSignal() = default;
 	};
 
 
+	/** A signal which is sent at the very beginning of playing an animation. */
 	struct SInteractAnimationEnterSignal
 	{
 		SInteractAnimationEnterSignal() = default;
 	};
 
 
+	/** A signal to indicate playback of the animation has failed. */
 	struct SInteractAnimationFailSignal
 	{
 		SInteractAnimationFailSignal() = default;
 	};
 
 
+	/** A signal to indicate playback of animation has completed. */
 	struct SInteractAnimationExitSignal
 	{
 		SInteractAnimationExitSignal() = default;
 	};
 
 
+	/** An signal which informs the system when an animation event has been reached. */
 	struct SInteractAnimationEventSignal
 	{
 		SInteractAnimationEventSignal() = default;
@@ -126,7 +136,7 @@ public:
 
 protected:
 	/** Sends the Schematyc start signal. */
-	virtual void ProcessSchematycSignalStart();
+	virtual void ProcessSchematycSignalStart() { GetEntity()->GetSchematycObject()->ProcessSignal(SInteractStartSignal(), GetGUID()); };
 
 	/**
 	Sends the Schematyc tick signal.
@@ -134,10 +144,10 @@ protected:
 	\param	deltaPitch The delta pitch.
 	\param	deltaYaw   The delta yaw.
 	**/
-	virtual void ProcessSchematycSignalTick(float deltaPitch, float deltaYaw);
+	virtual void ProcessSchematycSignalTick(float deltaPitch, float deltaYaw) { GetEntity()->GetSchematycObject()->ProcessSignal(SInteractTickSignal(deltaPitch, deltaYaw), GetGUID()); };
 	
 	/** Sends the Schematyc complete signal. */
-	virtual void ProcessSignalComplete();
+	virtual void ProcessSignalComplete() { GetEntity()->GetSchematycObject()->ProcessSignal(SInteractCompleteSignal(), GetGUID()); };
 
 
 	/**
@@ -146,7 +156,7 @@ protected:
 	\param	verb		   The DRS verb.
 	\param	isInteractedOn True if this instance is interacted on.
 	**/
-	void InformAllLinkedEntities(string verb, bool isInteractedOn);
+	virtual void InformAllLinkedEntities(string verb, bool isInteractedOn);
 
 	virtual void OnResetState();
 
@@ -171,5 +181,32 @@ protected:
 
 	/** The interaction being run by this component. */
 	IInteraction* m_interaction { nullptr };
+
+	/** A set of tags which will be added to the fragment when it plays. */
+	std::vector<Schematyc::CSharedString> m_tags;
+	//Schematyc::CSharedString m_tags;
 };
+
+
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractStartSignal>& desc)
+{
+	desc.SetGUID("{D7834D96-13FB-41C4-90D1-F3D977CA0AC7}"_cry_guid);
+	desc.SetLabel("Interact Start");
+}
+
+
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractTickSignal>& desc)
+{
+	desc.SetGUID("{C11053C3-0CB4-4316-A643-F53BECBA07B5}"_cry_guid);
+	desc.SetLabel("Interact Tick");
+	desc.AddMember(&CInteractComponent::SInteractTickSignal::m_deltaPitch, 'dpit', "DeltaPitch", "Delta Pitch", "Player input requested change in pitch.", 0.0f);
+	desc.AddMember(&CInteractComponent::SInteractTickSignal::m_deltaYaw, 'dyaw', "DeltaYaw", "Delta Yaw", "Player input requested change in yaw.", 0.0f);
+}
+
+
+static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractCompleteSignal>& desc)
+{
+	desc.SetGUID("{6E153DFF-B21B-4E92-8D50-976B17802556}"_cry_guid);
+	desc.SetLabel("Interact Complete");
+}
 }

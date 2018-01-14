@@ -45,8 +45,8 @@ public:
 	{
 		desc.SetGUID("{C07C367C-106F-4FD4-B7D5-E40C1A21F9F3}"_cry_guid);
 		// TODO: CRITICAL: HACK: BROKEN: !!
-//		desc.AddMember(&CDRSInteractionComponent::SDRSProperties::key, 'key', "Key", "Key", nullptr, "");
-//		desc.AddMember(&CDRSInteractionComponent::SDRSProperties::value, 'valu', "Value", "Value", nullptr, "");
+		//desc.AddMember(&CDRSInteractionComponent::SDRSProperties::key, 'key', "Key", "Key", "DRS Key", "");
+		//desc.AddMember(&CDRSInteractionComponent::SDRSProperties::value, 'valu', "Value", "Value", "DRS Value", "");
 	}
 
 
