@@ -47,8 +47,8 @@ protected:
 	void Update();
 
 public:
-	CPlayerInputComponent() {}
-	virtual ~CPlayerInputComponent() {};
+	CPlayerInputComponent() = default;
+	virtual ~CPlayerInputComponent() = default;
 
 	static void ReflectType(Schematyc::CTypeDesc<CPlayerInputComponent>& desc);
 
@@ -143,7 +143,7 @@ public:
 	///** Listen for 'special' keys and be notified when they are input e.g. ESC, Examine. */
 	//struct IInputSpecialListener
 	//{
-	//	virtual ~IInputSpecialListener() {};
+	//	virtual ~IInputSpecialListener() = default;
 
 	//	virtual void OnInputSpecialEsc() = 0;
 	//	virtual void OnInputSpecialExamine() = 0;

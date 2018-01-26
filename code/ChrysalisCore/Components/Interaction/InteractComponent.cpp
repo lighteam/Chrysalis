@@ -71,7 +71,9 @@ void CInteractComponent::ReflectType(Schematyc::CTypeDesc<CInteractComponent>& d
 	desc.AddMember(&CInteractComponent::m_isEnabled, 'isen', "IsEnabled", "IsEnabled", "Is this interaction currently enabled.", true);
 	desc.AddMember(&CInteractComponent::m_isSingleUseOnly, 'issi', "IsSingleUseOnly", "Single Use Only", "Is this Interact only able to be used once.", false);
 	desc.AddMember(&CInteractComponent::m_queueSignal, 'alts', "InteractVerb", "Interact Verb (Override)", "Send an alternative queue signal to DRS if the string is not empty. ('interaction_Interact').", "");
-	//desc.AddMember(&CInteractComponent::m_tags, 'tags', "Tags", "Mannequin Tags", "Set these tags when playing the animation.", std::vector<Schematyc::CSharedString>());
+	
+	// HACK: For now, there's no way to set the list of tags. Release 5.5 should have vector<string> support.
+	//desc.AddMember(&CInteractComponent::m_tags, 'tags', "Tags", "Mannequin Tags", "Set these tags when playing the animation.", std::vector<string>{});
 }
 
 
@@ -105,7 +107,7 @@ void CInteractComponent::OnInteractionInteractStart(IInteraction& pInteraction, 
 
 		// We should queue an animation for this action.
 		// TODO: This needs to pass in tags to the animation.
-		auto action = new CActorAnimationActionInteraction();
+		auto action = new CActorAnimationActionInteraction(m_tags);
 		action->AddEventListener(this);
 		actor.QueueAction(*action);
 

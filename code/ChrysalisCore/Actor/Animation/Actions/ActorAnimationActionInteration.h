@@ -10,7 +10,7 @@ namespace Chrysalis
 /** Listen for animation events that are triggered while running this action. */
 struct IAnimationEventListener
 {
-	virtual ~IAnimationEventListener() {};
+	virtual ~IAnimationEventListener() = default;
 
 	virtual void OnActionAnimationEnter() = 0;
 	virtual void OnActionAnimationFail(EActionFailure actionFailure) = 0;
@@ -24,8 +24,8 @@ class CActorAnimationActionInteraction : public CAnimationAction
 public:
 	DEFINE_ACTION("Interaction");
 
-	CActorAnimationActionInteraction();
-	virtual ~CActorAnimationActionInteraction() {};
+	CActorAnimationActionInteraction(const std::vector<string>& tags);
+	virtual ~CActorAnimationActionInteraction() = default;
 
 	// IAction
 	void OnInitialise() override;
@@ -50,6 +50,7 @@ public:
 
 private:
 	const struct SMannequinInteractionParams* m_interactionParams;
+	std::vector<string> m_tags;
 
 	/** Listeners for animation events. */
 	std::list<IAnimationEventListener*> m_listenersList;

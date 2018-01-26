@@ -339,17 +339,6 @@ void CActorControllerComponent::UpdateLookDirectionRequest(float frameTime)
 			else
 				facingDir = CCamera::CreateAnglesYPR(m_movementRequest.GetNormalizedFast());
 
-			// Take the direction they are facing as a target.
-			//const Vec3 lowerBodyDir = CCamera::CreateViewdir(Ang3(DEG2RAD(GetLowerBodyRotation(pPlayerInput->GetMovementDirectionFlags())), 0.0f, 0.0f));
-			//CryWatch("lowerBodyDir = %f, %f, %f", lowerBodyDir.x, lowerBodyDir.y, lowerBodyDir.z);
-			//m_movementRequest = pPlayer->GetCamera()->GetRotation() * lowerBodyDir * moveSpeed;
-			//if (pPlayer->IsThirdPerson())
-			//	facingDir = CCamera::CreateAnglesYPR(m_movementRequest.GetNormalizedFast());
-			//else
-			//	facingDir = CCamera::CreateAnglesYPR(Matrix33(m_lookOrientation) * lowerBodyDir);
-
-			//facingDir = m_movementRequest * pPlayer->GetCamera()->GetRotation() * lowerBodyDir;// FORWARD_DIRECTION;
-
 			// Use their last orientation as their present direction.
 			// NOTE: I tried it with GetEntity()->GetWorldTM() but that caused crazy jitter issues.
 			Ang3 ypr = CCamera::CreateAnglesYPR(Matrix33(m_lookOrientation));

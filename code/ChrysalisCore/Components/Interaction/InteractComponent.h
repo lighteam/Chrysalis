@@ -51,7 +51,7 @@ public:
 	/** A signal that indicates the user is holding down the interact key. */
 	struct SInteractTickSignal
 	{
-		SInteractTickSignal() {};
+		SInteractTickSignal() = default;
 		SInteractTickSignal(float deltaPitch, float deltaYaw) : m_deltaPitch(deltaPitch), m_deltaYaw(deltaYaw) {};
 
 		float m_deltaPitch { 0.0f };
@@ -183,8 +183,8 @@ protected:
 	IInteraction* m_interaction { nullptr };
 
 	/** A set of tags which will be added to the fragment when it plays. */
-	std::vector<Schematyc::CSharedString> m_tags;
-	//Schematyc::CSharedString m_tags;
+	//std::vector<Schematyc::CSharedString> m_tags;
+	std::vector<string> m_tags {"InteractionHigh", "InteractionFlipSwitch"};
 };
 
 

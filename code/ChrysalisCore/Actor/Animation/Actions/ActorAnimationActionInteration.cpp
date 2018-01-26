@@ -13,7 +13,7 @@ namespace Chrysalis
 	x( InteractionHigh ) /* The general height of the interaction object. */ \
 	x( InteractionMiddle ) \
 	x( InteractionLow ) \
-	x( InteractionGrabObject ) /*  */ \
+	x( InteractionGrabObject ) /* Interaction method. */ \
 	x( InteractionFlipSwitch ) \
 	x( InteractionDeadLift ) \
 	x( InteractionTurnWheel ) \
@@ -31,8 +31,9 @@ namespace Chrysalis
 MANNEQUIN_USER_PARAMS(SMannequinInteractionParams, INTERACTION_FRAGMENTS, INTERACTION_TAGS, INTERACTION_TAGGROUPS, INTERACTION_SCOPES, INTERACTION_CONTEXTS, INTERACTION_FRAGMENT_TAGS);
 
 
-CActorAnimationActionInteraction::CActorAnimationActionInteraction()
+CActorAnimationActionInteraction::CActorAnimationActionInteraction(const std::vector<string>& tags)
 	: CAnimationAction(EActorActionPriority::eAAP_Interaction, FRAGMENT_ID_INVALID, TAG_STATE_EMPTY, IAction::FragmentIsOneShot)
+	, m_tags(tags)
 {
 }
 
@@ -67,11 +68,16 @@ void CActorAnimationActionInteraction::Enter()
 {
 	CAnimationAction::Enter();
 
-	// TEST!
-	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, true);
-	GetContext().state.Set(m_interactionParams->tagIDs.InteractionGrabObject, true);
-
-	auto isEmpty = m_listenersList.empty();
+	// I'm going to push some tags...
+	const SControllerDef& controllerDef = m_rootScope->GetActionController().GetContext().controllerDef;
+	for (auto& it : m_tags)
+	{
+		const auto tagId = controllerDef.m_tags.Find(it);
+		if (tagId != TAG_ID_INVALID)
+		{
+			GetContext().state.Set(tagId, true);
+		}
+	}
 
 	// Notify listeners.
 	for (auto it : m_listenersList)
@@ -96,9 +102,16 @@ void CActorAnimationActionInteraction::Exit()
 	// Grab the actor in the root scope.
 	CActorComponent& actor = *CActorComponent::GetActor(m_rootScope->GetEntityId());
 
-	// TEST!
-	GetContext().state.Set(m_interactionParams->tagIDs.InteractionMiddle, false);
-	GetContext().state.Set(m_interactionParams->tagIDs.InteractionGrabObject, false);
+	// I'm going to pop some tags...
+	const SControllerDef& controllerDef = m_rootScope->GetActionController().GetContext().controllerDef;
+	for (auto& it : m_tags)
+	{
+		const auto tagId = controllerDef.m_tags.Find(it);
+		if (tagId != TAG_ID_INVALID)
+		{
+			GetContext().state.Set(tagId, false);
+		}
+	}
 
 	// Notify listeners.
 	for (auto it : m_listenersList)
