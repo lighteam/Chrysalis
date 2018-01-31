@@ -3,6 +3,7 @@
   <File path="test_all/test_all.cry"/>
  </Files>
  <Dependencies>
+  <Path>%engine%/config/defaultscripts/compressionpolicy.xml</Path>
   <Path>%engine%/engineassets/codecoverage/hit.dds</Path>
   <Path>%engine%/engineassets/codecoverage/pbar.dds</Path>
   <Path>%engine%/engineassets/codecoverage/unexpected.dds</Path>
@@ -10,80 +11,40 @@
   <Path>%engine%/engineassets/icons/highmemoryusage.dds</Path>
   <Path>%engine%/engineassets/icons/livepreview.dds</Path>
   <Path>%engine%/engineassets/icons/lowmemoryusage.dds</Path>
-  <Path>%engine%/engineassets/materials/fog/fogvolumebox.mtl</Path>
-  <Path>%engine%/engineassets/materials/fog/fogvolumeellipsoid.mtl</Path>
-  <Path>%engine%/engineassets/materials/fog/oceaninto.mtl</Path>
-  <Path>%engine%/engineassets/materials/fog/oceanintolowspec.mtl</Path>
-  <Path>%engine%/engineassets/materials/fog/oceanoutof.mtl</Path>
-  <Path>%engine%/engineassets/materials/fog/oceanoutoflowspec.mtl</Path>
-  <Path>%engine%/engineassets/materials/water/wateroceanbottom.mtl</Path>
-  <Path>%engine%/engineassets/objects/default.cgf</Path>
-  <Path>%engine%/engineassets/objects/helper.mtl</Path>
-  <Path>%engine%/engineassets/texturemsg/defaultnouvs.dds</Path>
   <Path>%engine%/engineassets/texturemsg/defaultsolids.mtl</Path>
-  <Path>%engine%/engineassets/textures/defaults/16_12.dds</Path>
-  <Path>%engine%/engineassets/textures/defaults/16_34.dds</Path>
-  <Path>%engine%/engineassets/textures/defaults/16_5.dds</Path>
-  <Path>%engine%/engineassets/textures/defaults/16_grey.dds</Path>
-  <Path>engineassets/materials/material_terrain_default.mtl</Path>
-  <Path>engineassets/materials/sky/sky.mtl</Path>
-  <Path>engineassets/materials/water/ocean_default.mtl</Path>
   <Path>engineassets/texturemsg/defaultsolids.mtl</Path>
   <Path>engineassets/textures/grey.dds</Path>
   <Path>engineassets/textures/white.dds</Path>
   <Path>libs/environmentpresets/test_all.xml</Path>
-  <Path>materials/terrain/grass/grass_01.mtl</Path>
+  <Path>objects/characters/human/male/animations/interaction/picking_up_object.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_b.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_bl_bkpd_loop.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_br_bkpd_loop.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_f.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_fl_loop.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_fr_loop.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_l.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/jog/jog_r.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/run/run_f.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/run/run_fl_loop.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/run/run_fr_loop.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/run/run_l.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/run/run_r.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/stand-relaxed/stand_relaxed_idle.caf</Path>
+  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_b.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_bl_bkpd_loop.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_br_bkpd_loop.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f_jump.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f_jump_lu.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f_jump_ru.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f_to_stand_relaxed.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f_to_stand_relaxed_lu.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_f_to_stand_relaxed_ru.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_fl_loop.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_fr_loop.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_180.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_90.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_bkpd.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_cir.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_jump.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_jump_lu.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_jump_ru.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_to_stand_relaxed.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_to_stand_relaxed_lu.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_l_to_stand_relaxed_ru.caf</Path>
   <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_180.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_90.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_bkpd.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_cir.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_jump.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_jump_lu.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_jump_ru.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_to_stand_relaxed.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_to_stand_relaxed_lu.caf</Path>
-  <Path>objects/characters/human/male/animations/motus-mobility-pro/walk/walk_r_to_stand_relaxed_ru.caf</Path>
   <Path>objects/characters/human/male/human_male.cdf</Path>
-  <Path>objects/characters/human/male/human_male_controller_defs.xml</Path>
-  <Path>objects/characters/human/male/human_male_fragment_ids.xml</Path>
-  <Path>objects/characters/human/male/human_male_tags.xml</Path>
-  <Path>objects/characters/human/male/textures/human_male_clothing_ddna.dds</Path>
-  <Path>objects/characters/human/male/textures/human_male_clothing_diff.dds</Path>
-  <Path>objects/characters/human/male/textures/human_male_clothing_spec.dds</Path>
-  <Path>objects/characters/human/male/textures/human_male_ddna.dds</Path>
-  <Path>objects/characters/human/male/textures/human_male_diff.dds</Path>
-  <Path>objects/characters/human/male/textures/human_male_spec.dds</Path>
   <Path>objects/doors/slide_vertical/slidevertical.cga</Path>
-  <Path>objects/doors/slide_vertical/slidevertical.mtl</Path>
   <Path>objects/doors/slide_vertical/slidevertical_default.anm</Path>
   <Path>objects/doors/slide_vertical/slidevertical_down.anm</Path>
   <Path>objects/items/flashlight/maglite_02d.cgf</Path>
-  <Path>objects/items/flashlight/maglite_02d.mtl</Path>
-  <Path>objects/items/flashlight/maglite_02d_ddna.dds</Path>
+  <Path>scripts/network/compressionpolicy.xml</Path>
   <Path>textures/lights/flashlight_projector.dds</Path>
-  <Path>textures/reference/zone_system.dds</Path>
  </Dependencies>
 </AssetMetadata>

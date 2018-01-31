@@ -73,7 +73,7 @@ void CInteractComponent::ReflectType(Schematyc::CTypeDesc<CInteractComponent>& d
 	desc.AddMember(&CInteractComponent::m_queueSignal, 'alts', "InteractVerb", "Interact Verb (Override)", "Send an alternative queue signal to DRS if the string is not empty. ('interaction_Interact').", "");
 	
 	// HACK: For now, there's no way to set the list of tags. Release 5.5 should have vector<string> support.
-	//desc.AddMember(&CInteractComponent::m_tags, 'tags', "Tags", "Mannequin Tags", "Set these tags when playing the animation.", std::vector<string>{});
+	desc.AddMember(&CInteractComponent::m_tags, 'tags', "Tags", "Mannequin Tags", "Set these tags when playing the animation.", TagCollection{});
 }
 
 
@@ -105,9 +105,16 @@ void CInteractComponent::OnInteractionInteractStart(IInteraction& pInteraction, 
 		// Inform the actor we are taking control of an interaction.
 		m_pInteractionActor->InteractionStart(m_interaction);
 
+		// HACK: We need to convert the tags from a Schematyc format to a more general one. In 5.5 / 5.6 we should be able
+		// to use the generic containers instead.
+		std::vector<string> tags;
+		for (int i = 0; i < m_tags.Size(); i++)
+		{
+			tags.push_back(m_tags.At(i).tag.c_str());
+		}
+
 		// We should queue an animation for this action.
-		// TODO: This needs to pass in tags to the animation.
-		auto action = new CActorAnimationActionInteraction(m_tags);
+		auto action = new CActorAnimationActionInteraction(tags);
 		action->AddEventListener(this);
 		actor.QueueAction(*action);
 
@@ -241,5 +248,14 @@ void CInteractComponent::InformAllLinkedEntities(string verb, bool isInteractedO
 		// Next please.
 		entityLinks = entityLinks->next;
 	}
+}
+
+
+bool Serialize(Serialization::IArchive& archive, CInteractComponent::SAnimationTag& value, const char* szName, const char* szLabel)
+{
+	archive(value.tag, "tag", "Tag");
+	archive.doc("An animation tag for the fragment.");
+
+	return true;
 }
 }

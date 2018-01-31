@@ -23,6 +23,22 @@ public:
 	CInteractComponent() {}
 	virtual ~CInteractComponent() {}
 
+	struct SAnimationTag
+	{
+		inline bool operator==(const SAnimationTag &rhs) const { return 0 == memcmp(this, &rhs, sizeof(rhs)); }
+		inline bool operator!=(const SAnimationTag &rhs) const { return 0 != memcmp(this, &rhs, sizeof(rhs)); }
+
+		Schematyc::CSharedString tag;
+
+		static void ReflectType(Schematyc::CTypeDesc<SAnimationTag>& desc)
+		{
+			desc.SetGUID("{C07C367C-106F-4FD4-B7D5-E40C1A21F9F3}"_cry_guid);
+			desc.AddMember(&SAnimationTag::tag, 'tag', "Tag", "Tag", "An animation tag for the fragment.", "");
+		}
+	};
+
+	typedef Schematyc::CArray<SAnimationTag> TagCollection;
+
 	static void ReflectType(Schematyc::CTypeDesc<CInteractComponent>& desc);
 
 	static CryGUID& IID()
@@ -183,8 +199,7 @@ protected:
 	IInteraction* m_interaction { nullptr };
 
 	/** A set of tags which will be added to the fragment when it plays. */
-	//std::vector<Schematyc::CSharedString> m_tags;
-	std::vector<string> m_tags {"InteractionHigh", "InteractionFlipSwitch"};
+	TagCollection m_tags;
 };
 
 
@@ -209,4 +224,6 @@ static void ReflectType(Schematyc::CTypeDesc<CInteractComponent::SInteractComple
 	desc.SetGUID("{6E153DFF-B21B-4E92-8D50-976B17802556}"_cry_guid);
 	desc.SetLabel("Interact Complete");
 }
+
+bool Serialize(Serialization::IArchive& archive, CInteractComponent::SAnimationTag& value, const char* szName, const char* szLabel);
 }

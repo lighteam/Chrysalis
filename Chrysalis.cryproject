@@ -51,6 +51,10 @@
             "value": "0"
         },
         {
+            "name": "ca_DrawAimIKVEGrid",
+            "value": "1"
+        },
+        {
             "name": "drs_dialogSubtitles",
             "value": "1"
         },
