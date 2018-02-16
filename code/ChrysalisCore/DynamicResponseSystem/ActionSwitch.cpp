@@ -32,7 +32,7 @@ DRS::IResponseActionInstanceUniquePtr CActionSwitch::Execute(DRS::IResponseInsta
 			{
 				// Simple option is to play the verb.
 				// #TODO: This should be a little more nuanced.
-				auto pInteraction = pInteractor->GetInteraction(verb.GetText())._Get();
+				auto pInteraction = pInteractor->GetInteraction(verb.GetText()).lock();
 				if (pInteraction)
 				{
 					if (auto pActorComponent = CPlayerComponent::GetLocalActor())

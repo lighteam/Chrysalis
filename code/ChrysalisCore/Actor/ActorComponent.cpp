@@ -185,13 +185,20 @@ void CActorComponent::Update(SEntityUpdateContext* pCtx)
 // *** 
 
 
+ICharacterInstance* CActorComponent::GetCharacter() const
+{
+	CRY_ASSERT(m_pAdvancedAnimationComponent);
+	return m_pAdvancedAnimationComponent->GetCharacter();
+}
+
+
 const Vec3 CActorComponent::GetLocalEyePos() const
 {
 	// The default, in case we can't find the actual eye position, will be to use an average male's height.
 	Vec3 eyePosition { 0.0f, 0.0f, 1.82f };
 
 	// Get their character or bail early.
-	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
+	auto pCharacter = m_pAdvancedAnimationComponent->GetCharacter();
 	if (!pCharacter)
 		return eyePosition;
 
@@ -200,7 +207,7 @@ const Vec3 CActorComponent::GetLocalEyePos() const
 	if (pAttachmentManager)
 	{
 		// Did the animators define a camera for us to use?
-		const auto eyeCamera = pAttachmentManager->GetIndexByName("#camera");
+		const auto eyeCamera = pAttachmentManager->GetIndexByName("Camera");
 		const IAttachment* pCameraAttachment = pAttachmentManager->GetInterfaceByIndex(eyeCamera);
 		if (pCameraAttachment)
 		{
@@ -208,8 +215,8 @@ const Vec3 CActorComponent::GetLocalEyePos() const
 			return GetEntity()->GetRotation() * pCameraAttachment->GetAttModelRelative().t;
 		}
 
-		const auto eyeLeft = pAttachmentManager->GetIndexByName("eye_left");
-		const auto eyeRight = pAttachmentManager->GetIndexByName("eye_right");
+		const auto eyeLeft = pAttachmentManager->GetIndexByName("LeftEye");
+		const auto eyeRight = pAttachmentManager->GetIndexByName("RightEye");
 		Vec3 eyeLeftPosition;
 		Vec3 eyeRightPosition;
 		int eyeFlags = 0;
@@ -238,7 +245,7 @@ const Vec3 CActorComponent::GetLocalEyePos() const
 				// This will most likely spam the log. Disable it if it's annoying.
 				if (!alreadyWarned)
 				{
-					CryLogAlways("Character does not have '#camera', 'left_eye' or 'right_eye' defined.");
+					CryLogAlways("Character does not have 'Camera', 'left_eye' or 'right_eye' defined.");
 					alreadyWarned = true;
 				}
 				break;
@@ -270,7 +277,7 @@ Vec3 CActorComponent::GetLocalLeftHandPos() const
 	const Vec3 handPosition { -0.2f, 0.3f, 1.3f };
 
 	// Get their character or bail early.
-	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
+	auto pCharacter = m_pAdvancedAnimationComponent->GetCharacter();
 	if (pCharacter)
 	{
 		// Determine the position of the left and right eyes, using their average for eyePosition.
@@ -299,7 +306,7 @@ Vec3 CActorComponent::GetLocalRightHandPos() const
 	const Vec3 handPosition { 0.2f, 0.3f, 1.3f };
 
 	// Get their character or bail early.
-	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
+	auto pCharacter = m_pAdvancedAnimationComponent->GetCharacter();
 	if (pCharacter)
 	{
 		// Determine the position of the left and right eyes, using their average for eyePosition.
@@ -616,12 +623,13 @@ void CActorComponent::OnActionItemDrop()
 
 		if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
 		{
-			if (auto pInteraction = pInteractor->GetInteraction("interaction_drop")._Get())
+			if (auto pInteraction = pInteractor->GetInteraction("interaction_drop").lock())
 			{
 				pInteraction->OnInteractionStart(*this);
 			}
 		}
 	}
+
 	// We no longer have an entity to drop.
 	m_interactionEntityId = INVALID_ENTITYID;
 }
@@ -636,7 +644,7 @@ void CActorComponent::OnActionItemToss()
 
 		if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
 		{
-			if (auto pInteraction = pInteractor->GetInteraction("interaction_toss")._Get())
+			if (auto pInteraction = pInteractor->GetInteraction("interaction_toss").lock())
 			{
 				pInteraction->OnInteractionStart(*this);
 			}
@@ -664,7 +672,7 @@ void CActorComponent::OnActionBarUse(int actionBarId)
 				if (verbs.size() >= actionBarId)
 				{
 					auto verb = verbs [actionBarId - 1];
-					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
+					auto pInteraction = pInteractor->GetInteraction(verb).lock();
 
 					pInteraction->OnInteractionStart(*this);
 				}
@@ -707,7 +715,7 @@ void CActorComponent::OnActionInspect()
 					pDrsProxy->GetResponseActor()->QueueSignal(verb);
 
 					// #HACK: Another test - just calling the interaction directly instead.
-					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
+					auto pInteraction = pInteractor->GetInteraction(verb).lock();
 					pInteraction->OnInteractionStart(*this);
 				}
 			}
@@ -766,7 +774,7 @@ void CActorComponent::OnActionInteractionStart()
 					auto verb = verbs [0];
 
 					// #HACK: Another test - just calling the interaction directly instead.
-					m_pInteraction = pInteractor->GetInteraction(verb)._Get();
+					m_pInteraction = pInteractor->GetInteraction(verb).lock();
 					CryLogAlways("Player started interacting with: %s", m_pInteraction->GetVerbUI());
 					m_pInteraction->OnInteractionStart(*this);
 				}

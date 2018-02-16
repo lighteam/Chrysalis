@@ -7,6 +7,7 @@
 #include "DefaultComponents/Physics/CharacterControllerComponent.h"
 #include <Components/Player/Input/PlayerInputComponent.h>
 #include <Actor/ActorControllerComponent.h>
+#include <Entities/Interaction/IEntityInteraction.h>
 
 
 namespace Chrysalis
@@ -18,7 +19,6 @@ class CSnaplockComponent;
 class CInventoryComponent;
 class CEquipmentComponent;
 struct IItem;
-struct IInteraction;
 
 
 /** Define a set of snaplock types that will be used by character entities e.g. equipment slots **/
@@ -201,10 +201,12 @@ public:
 	/** Get's the player controlling this actor, if there is one. This may return nullptr. */
 	virtual CPlayerComponent* GetPlayer() const = 0;
 
+	virtual ICharacterInstance* GetCharacter() const = 0;
+
 	/**
 	Gets this instance's local-space eye position (for a human, this is typically Vec3 (0, 0, 1.76f)).
 
-	The code will first attempt to return a "#camera" helper if there is one. If only one eye is available (left_eye,
+	The code will first attempt to return a "Camera" helper if there is one. If only one eye is available (left_eye,
 	right_eye) then that is used as the local position. In the case of two eyes, the position is the average of the two
 	eyes.
 
@@ -285,7 +287,7 @@ public:
 
 	/** Is the actor currently jogging?  */
 	virtual bool IsJogging() const = 0;
-	
+
 	/**
 	Call this to place the actor into "interaction mode". This should be called by any section of code that wants to
 	trigger an interaction with the actor. This will lock out any other attempts to start an interaction until this one
@@ -302,10 +304,10 @@ public:
 
 	/** Queue an action onto the animation queue. */
 	virtual void QueueAction(TAction<SAnimationContext>& pAction) = 0;
-		
+
 	/**
 	Gets action controller.
-	
+
 	\return Null if it fails, else the action controller.
 	**/
 	virtual IActionController* GetActionController() const = 0;
@@ -512,6 +514,8 @@ public:
 	/** Gives you access to the controller component for this actor. Use with caution. **/
 	CActorControllerComponent* GetControllerComponent() const { return m_pActorControllerComponent; }
 
+	ICharacterInstance* GetCharacter() const override;
+
 protected:
 	Cry::DefaultComponents::CAdvancedAnimationComponent* m_pAdvancedAnimationComponent { nullptr };
 	Cry::DefaultComponents::CCharacterControllerComponent* m_pCharacterControllerComponent { nullptr };
@@ -527,7 +531,7 @@ protected:
 
 private:
 	/** An component which is used to discover entities near the actor. */
-	CEntityAwarenessComponent* m_pAwareness { nullptr };
+	CEntityAwarenessComponent * m_pAwareness { nullptr };
 
 	/** A component that allows for management of snaplocks. */
 	CSnaplockComponent* m_pSnaplockComponent { nullptr };
@@ -626,7 +630,7 @@ private:
 	EntityId m_interactionEntityId { INVALID_ENTITYID };
 
 	/** If we're interacting with something, this is the actual interaction. */
-	IInteraction* m_pInteraction { nullptr };
+	IInteractionPtr m_pInteraction;
 
 	/** True when the actor is busy interaction with something, and shouldn't be allowed to start a new interaction until
 	the first is finished. */

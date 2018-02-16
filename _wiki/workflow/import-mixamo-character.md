@@ -19,10 +19,10 @@
 *   Drag the 'Meshes' group and drop it onto 'human_female_group'.
 *   Select all the meshes and use the 'MAT.ED' to 'Create Group From Selection' and call it 'human_female'.
 *   Using the 'Rigging' workspace, "Skin...Prune Small Weights" if you have too many skinning influences.
-*   Validate and export it.
 
 Save this as a Maya (*.mb) file.
 
+*   Validate and export it.
 *   Re-parent 'Root' onto 'RootProxy'.
 *   Make sure you zero out the rotation on the 'Root' node joint and transfer it to the 'RootProxy' instead. Keep the model facing the same direction as it was when you exported the CHR file.
 *   'Export Selection' to an FBX file. I typically call it 'human_male_base.fbx' or something similar to indicate it's purpose. Use that as input into Motionbuilder.
